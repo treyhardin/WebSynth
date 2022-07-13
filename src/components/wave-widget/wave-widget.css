@@ -1,0 +1,51 @@
+.wave-widget-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--size-s);
+}
+
+.wave-widget-icon {
+    position: relative;
+    width: var(--size-l);
+    height: var(--size-l);
+    max-width: 40px;
+    max-height: 40px;
+    border-radius: 100%;
+    border: 2px solid var(--color-ink);
+    background-color: var(--color-ink);
+    overflow: hidden;
+}
+
+.wave-widget-icon::before {
+    content: "";
+    position: absolute;
+    top: var(--max, 100%);
+    bottom: var(--min, 0%);
+    /* height: var(--max, 100%); */
+    left: 0;
+    right: 0;
+    background-color: var(--color-green);
+}
+
+.wave-widget-icon svg {
+    color: var(--color-reverse);
+    animation: wave 3s linear 0s infinite;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 200%;
+}
+
+@keyframes wave {
+    from {left: -100%;}
+    to {left: 0%;}
+}
+
+.wave-widget-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: var(--size-s)
+}

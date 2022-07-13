@@ -1,0 +1,22 @@
+.landing-screen {
+  z-index: 999;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: var(--color-blue);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* background-color:#b699ff;
+  background-image:
+  radial-gradient(at 38% 42%, hsla(10,71%,66%,1) 0px, transparent 50%),
+  radial-gradient(at 77% 46%, hsla(30,65%,62%,1) 0px, transparent 50%),
+  radial-gradient(at 80% 11%, hsla(64,64%,65%,1) 0px, transparent 50%),
+  radial-gradient(at 39% 52%, hsla(335,87%,60%,1) 0px, transparent 50%),
+  radial-gradient(at 53% 95%, hsla(28,84%,70%,1) 0px, transparent 50%),
+  radial-gradient(at 87% 77%, hsla(230,94%,76%,1) 0px, transparent 50%),
+  radial-gradient(at 14% 4%, hsla(298,89%,62%,1) 0px, transparent 50%); */
+}

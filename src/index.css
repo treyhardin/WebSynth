@@ -1,0 +1,70 @@
+:root {
+  --color-ink: #3c3c3c;
+  --color-reverse: #feffe7;
+  --color-green: #00c123;
+  --color-blue: #5517ff;
+  --size-l: 8vw;
+  --size-m: 4vw;
+  --size-s: 2vw;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Press Start 2P', -apple-system, Blcolor-inkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 3vw;
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+.section {
+  margin: 0;
+  padding: 0;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+h1 {
+  font-size: 12vw;
+  line-height: 1;
+  margin: 0 0 var(--size-s);
+}
+
+h2 {
+
+}
+
+h3 {
+
+}
+
+p {
+  margin: 0;
+  line-height: 1;
+}
+
+.label {
+  font-size: 2vw;
+  text-transform: uppercase;
+}
+
+button {
+  /* border: 1px solid var(--ink); */
+  padding: var(--size-m);
+  background: var(--color-green);
+  font-family: inherit;
+  text-transform: uppercase;
+}
+
