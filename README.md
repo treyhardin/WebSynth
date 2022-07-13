@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# Raspberry Pi Synth
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A simple synthesizer built on the Web MIDI API(https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API)
 
 ## Available Scripts
 
