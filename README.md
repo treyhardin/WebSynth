@@ -17,4 +17,4 @@ This should also have live reload enabled, but it can be finicky so ya know, jus
 
 ## MIDI Configuration
 
-The MIDI mappings were originally set up for the [Arturia Minilab Mk II](https://www.arturia.com/products/hybrid-synths/minilab-mkii/overview) but can easily be configured for other devices. All core settings can be accessed via `src/components/midi-input/midi-config.js`. I'll probably add a MIDI configuration step in the frontend, but who knows.
+The MIDI mappings were originally set up for the [Arturia Minilab Mk II](https://www.arturia.com/products/hybrid-synths/minilab-mkii/overview) but can easily be configured for other devices. All core settings can be accessed via `src/components/midi-input/midi-config.js`. I'll probably add a MIDI configuration step in the frontend at some point but, but 🤷‍♂️.
