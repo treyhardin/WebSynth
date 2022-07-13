@@ -15,6 +15,14 @@ Run to start a localhost server with HTTPS enabled. This is currently required b
 
 This should also have live reload enabled, but it can be finicky so ya know, just refresh every now and then.
 
+### `Have Fun 🎉`
+
+Set up is pretty easy, so at this point you should be jamming on your MIDI keyboard. 
+
 ## MIDI Configuration
 
 The MIDI mappings were originally set up for the [Arturia Minilab Mk II](https://www.arturia.com/products/hybrid-synths/minilab-mkii/overview) but can easily be configured for other devices. All core settings can be accessed via `src/components/midi-input/midi-config.js`. I'll probably add a MIDI configuration step in the frontend at some point but, but 🤷‍♂️.
+
+## Coming Soon
+
+Up next, I'm gonna be adding more advanced synth features such as VCO, VCA, additional filters, etc. Stay tuned.
