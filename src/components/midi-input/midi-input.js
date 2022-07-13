@@ -375,6 +375,7 @@ export default function MIDIInput() {
           )
         })}
       </div>
+      <p></p>
     </section>
   )
 }
