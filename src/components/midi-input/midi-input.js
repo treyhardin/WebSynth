@@ -357,12 +357,12 @@ export default function MIDIInput() {
           min={normalize(highPassFrequencyRef.current, effectsSettings.highPassMax, 0, 50)} 
           max={normalize(lowPassFrequencyRef.current, effectsSettings.lowPassMax, 0, 50)} 
         />
-        <WaveWidget 
+        {/* <WaveWidget 
           label="VCO" 
           waveType={vcoWave} 
           min={normalize(highPassFrequencyRef.current, effectsSettings.highPassMax, 0, 50)} 
           max={normalize(lowPassFrequencyRef.current, effectsSettings.lowPassMax, 0, 50)} 
-        />
+        /> */}
       </section>
       <div className="notes-wrapper">
         {activeNotes.length <= 0 ? <p className="note-placeholder">Play a Key</p> : null}
