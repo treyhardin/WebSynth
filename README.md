@@ -1,6 +1,6 @@
 # Raspberry Pi Synth
 
-A simple synthesizer built on the Web MIDI API(https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API)
+A simple synthesizer built on the [Web MIDI API](https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API)
 
 ## Available Scripts
 
