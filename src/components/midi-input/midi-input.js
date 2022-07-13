@@ -356,7 +356,7 @@ export default function MIDIInput() {
           waveType={toneWave} 
           min={normalize(highPassFrequencyRef.current, effectsSettings.highPassMax, 0, 50)} 
           max={normalize(lowPassFrequencyRef.current, effectsSettings.lowPassMax, 0, 50)} 
-        />
+        /> 
         {/* <WaveWidget 
           label="VCO" 
           waveType={vcoWave} 
