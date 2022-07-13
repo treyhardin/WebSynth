@@ -1,23 +1,17 @@
 # Raspberry Pi Synth
 
-A simple synthesizer built on the [Web MIDI API](https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API)
+A simple React-based synthesizer built on the [Web MIDI API](https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API) and [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API). Originally built for Raspberry Pi with a mini display, but compatible with any modern web browser.
 
-## Available Scripts
+## Get Started
 
-In the project directory, you can run:
+Run `npm run startHTTPS` to start a localhost server with HTTPS enabled. This is currently required by most browsers to enable the MIDI API. Runs on [https://localhost:3000](https://localhost:3000).
 
-### `npm start`
+### `npm run startHTTPS`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run build`
 
