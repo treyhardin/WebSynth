@@ -6,12 +6,12 @@ A simple React-based synthesizer built on the [Web MIDI API](https://developer.m
 
 ## Get Started
 
-### NPM Install
+### `npm install`
 You know the drill. Install project dependencies. There aren't a ton, pretty much just standard React stuff.
 
 ### `npm run startHTTPS`
 
-Run `npm run startHTTPS` to start a localhost server with HTTPS enabled. This is currently required by most browsers to enable the MIDI API. Runs on [https://localhost:3000](https://localhost:3000).
+Run to start a localhost server with HTTPS enabled. This is currently required by most browsers to enable the MIDI API. Runs on [https://localhost:3000](https://localhost:3000).
 
 This should also have live reload enabled, but it can be finicky so ya know, just refresh every now and then.
 
