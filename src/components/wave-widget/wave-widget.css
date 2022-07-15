@@ -12,8 +12,8 @@
     position: relative;
     width: var(--size-l);
     height: var(--size-l);
-    max-width: 40px;
-    max-height: 40px;
+    /* max-width: 40px;
+    max-height: 40px; */
     border-radius: 100%;
     border: 2px solid var(--color-ink);
     background-color: var(--color-green);

@@ -17,7 +17,7 @@
   display: flex;
   flex-direction: row;
   justify-content: stretch;
-  align-items: center;
+  align-items: stretch;
 }
 /* 
 .wave-type-wrapper {
