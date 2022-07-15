@@ -1,10 +1,13 @@
 # Raspberry Pi Synth
 
-A simple React-based synthesizer built on the [Web MIDI API](https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API) and [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API). Originally built for Raspberry Pi with a mini display, but compatible with any Chromium browser. *Only works with MIDI controller connected (for now) & for some reason doesn't work in Safari.*.
+A simple React-based synthesizer built on the [Web MIDI API](https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API) and [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API). Originally built for Raspberry Pi with a mini display, but compatible with any Chromium browser. 
+
+### Compatibility
+The [Web MIDI API](https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API) is not currently supported in Safari or Firefox. Because of this, the synth will only work in Chrome with a MIDI device connected.
 
 ![GIF of Welcome Screen and Notes Playing In-App](https://raspberry-pi-synthesizer-3qeeey9v1-treyhardin.vercel.app/Readme_Demo1.gif)
 
-## [Live Demo](https://raspberry-pi-synthesizer.vercel.app/)
+#### [Live Demo](https://raspberry-pi-synthesizer.vercel.app/)
 
 ## Get Started
 

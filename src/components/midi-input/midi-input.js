@@ -86,7 +86,10 @@ export default function MIDIInput() {
     setOutputGain(effectsSettings.outputGainDefault)
 
     if (isFullscreen && !audioContext) {
+      window.AudioContext = window.AudioContext || window.webkitAudioContext
       audioContext = new AudioContext();
+      // audioContext.resume()
+      console.log(audioContext)
       lfoTime = audioContext.currentTime;
 
       let newLfoOscillator = audioContext.createOscillator();
@@ -112,12 +115,15 @@ export default function MIDIInput() {
 
   // Setup Web MIDI API
   const onMIDISuccess = (midiAccess) => {
+    // console.log("Midi SuccesS!")
     midiAccess.addEventListener('stateChange', updateDevices)
 
     const inputs = midiAccess.inputs;
 
     // Hacky Way to Remove Empty MIDI Ports
     inputs.forEach((input) => {
+
+      // console.log(input)
       if (input.manufacturer !== '') {
         input.addEventListener('midimessage', getMIDIMessage)
       }
@@ -134,9 +140,11 @@ export default function MIDIInput() {
 
   if (navigator.requestMIDIAccess) {
     navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure)
+  } else {
+    console.log("Browser does not support MIDI access")
   }
 
-  window.AudioContext = window.AudioContext || window.webkitAudioContext
+  
   let audioContext;
 
 
