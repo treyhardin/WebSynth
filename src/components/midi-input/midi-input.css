@@ -13,7 +13,11 @@
   left: 0;
   right: 0;
   /* background-color: green; */
-  padding: var(--size-s);
+  /* padding: var(--size-s); */
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: center;
 }
 /* 
 .wave-type-wrapper {

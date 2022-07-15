@@ -15,51 +15,95 @@ export default function MIDIInput() {
   // Active Notes State
   const [activeNotes, setActiveNotes] = useState([])
 
-  // Tone Wave State
-  const [ toneWave, setToneWave ] = useState(null)
-  const toneWaveRef = useRef()
-  toneWaveRef.current = toneWave
-  let toneWaves = ['Sine', 'Sawtooth', 'Square', 'Triangle']
-
   // VCO Wave State
   const [ vcoWave, setVcoWave ] = useState(null)
   const vcoWaveRef = useRef()
   vcoWaveRef.current = vcoWave
   let vcoWaves = ['Sine', 'Sawtooth', 'Square', 'Triangle']
-  let vcoOscillator;
-  let vcoGain;
 
-  // High Pass State
-  const [ highPassFrequency, setHighPassFrequency ] = useState(null)
-  const highPassFrequencyRef = useRef()
-  highPassFrequencyRef.current = highPassFrequency
+  // VCA State
+  const [ vcaGain, setVcaGain ] = useState(null)
+  const vcaGainRef = useRef()
+  vcaGainRef.current = vcaGain
 
-  // Low Pass State
-  const [ lowPassFrequency, setLowPassFrequency ] = useState(null)
-  const lowPassFrequencyRef = useRef()
-  lowPassFrequencyRef.current = lowPassFrequency
+  // LFO State
+  const [ lfoOscillator, setLfoOscillator ] = useState(null)
+  const lfoOscillatorRef = useRef()
+  lfoOscillatorRef.current = lfoOscillator
+
+  // LFO Wave Type State
+  const [ lfoWaveType, setLfoWaveType ] = useState(null)
+  const lfoWaveTypeRef = useRef()
+  lfoWaveTypeRef.current = lfoWaveType
+  let lfoWaveTypes = ['Sine', 'Sawtooth', 'Square', 'Triangle']
+  let lfoTime;
+
+  // LFO Gain State
+  const [ lfoGain, setLfoGain ] = useState(null)
+  const lfoGainRef = useRef()
+  lfoGainRef.current = lfoGain
+
+  // LFO Frequency State
+  const [ lfoFrequency, setLfoFrequency ] = useState(null)
+  const lfoFrequencyRef = useRef()
+  lfoFrequencyRef.current = lfoFrequency
+
+  // VCF Filter Type
+  const [ vcfFilter, setVcfFilter ] = useState(null)
+  const vcfFilterRef = useRef()
+  vcfFilterRef.current = vcfFilter
+  let vcfFilters = ['Lowpass', 'Highpass', 'Bandpass', 'HighShelf', 'LowShelf', 'Peaking', 'Allpass', 'Notch']
+
+  // VCF Frequency
+  const [ vcfFrequency, setVcfFrequency ] = useState(null)
+  const vcfFrequencyRef = useRef()
+  vcfFrequencyRef.current = vcfFrequency
+
+  // VCF Q
+  const [ vcfQ, setVcfQ ] = useState(null)
+  const vcfQRef = useRef()
+  vcfQRef.current = vcfQ
+
+  // Output Gain
+  const [ outputGain, setOutputGain ] = useState(null)
+  const outputGainRef = useRef()
+  outputGainRef.current = outputGain
+  
 
   // Set Initial Values
   useEffect(() => {
+    
+    setVcoWave(vcoWaves[0])
+    setVcaGain(effectsSettings.vcaGainDefault)
+
+    setLfoWaveType(lfoWaveTypes[0])
+    setLfoFrequency(effectsSettings.lfoFrequencyDefault)
+    setLfoGain(effectsSettings.lfoGainDefault)
+
+    setVcfFilter(vcfFilters[0])
+    setVcfFrequency(effectsSettings.vcfFrequencyDefault)
+    setVcfQ(effectsSettings.vcfQDefault)
+    setOutputGain(effectsSettings.outputGainDefault)
+
     if (isFullscreen && !audioContext) {
-        audioContext = new AudioContext();
+      audioContext = new AudioContext();
+      lfoTime = audioContext.currentTime;
 
-        vcoOscillator = audioContext.createOscillator();
-        vcoOscillator.type = vcoWaveRef.current.toLowerCase();
+      let newLfoOscillator = audioContext.createOscillator();
+      newLfoOscillator.type = lfoWaveType.toLowerCase()
+      newLfoOscillator.frequency.value = effectsSettings.lfoFrequencyDefault
+      setLfoOscillator(newLfoOscillator)
 
-        vcoGain = audioContext.createGain();
-        vcoGain.gain.value = effectsSettings.vcoGainDefault;
+      let lfoGain = audioContext.createGain();
+      lfoGain.gain.value = effectsSettings.lfoGainDefault;
+      setLfoGain(lfoGain.gain.value)
 
-        vcoOscillator.connect(vcoGain)
+      newLfoOscillator.connect(lfoGain)
+      newLfoOscillator.lfoGain = lfoGain
+      
+      newLfoOscillator.start(lfoTime)
 
-        vcoOscillator.start()
-
-    }
-
-    setToneWave(toneWaves[0])
-    setVcoWave(toneWaves[0])
-    setHighPassFrequency(effectsSettings.highPassDefault)
-    setLowPassFrequency(effectsSettings.lowPassDefault)
+  }
 
   }, [isFullscreen])
 
@@ -107,17 +151,14 @@ export default function MIDIInput() {
   /*-----Handle MIDI Messages------*/
 
   // Create Empty Objects for Active Attributes
-  const oscillators = {};
-  // const highPassFilters = {};
-  // const lowPassFilters = {};
+  const synthVoices = {};
 
   // Get Currently Playing Notes
   const updateActiveNotes = (noteData) => {
     setActiveNotes(() => {
       let newNotes = []
-      Object.entries(oscillators).map(([key, value]) => {
+      Object.entries(synthVoices).map(([key, value]) => {
         return newNotes.push({key, value, noteData})
-        // console.log(noteData)
       })
       return newNotes
     })
@@ -132,65 +173,75 @@ export default function MIDIInput() {
   // NOTE ON
   const noteOn = (midiMessage) => {
 
-    // console.log(vcoGain)
-
     let note = midiMessage.data[1]
     let velocity = midiMessage.data[2]
 
     if (audioContext) {
+
+
+      // Create VCO Oscillator
+      let vcoOscillator = audioContext.createOscillator();
+      vcoOscillator.type = vcoWaveRef.current.toLowerCase()
+      vcoOscillator.frequency.value = midiToFrequency(note)
+
+      // Create VCA
+      let vcaGain = audioContext.createGain();
+      vcaGain.gain.value = vcaGainRef.current;
+      vcoOscillator.vcaGain = vcaGain
+
+      vcoOscillator.lfoOscillator = lfoOscillator;
+
+      // Create LFO Oscillator
+      // let lfoOscillator = audioContext.createOscillator();
+      // lfoOscillator.type = lfoWaveTypeRef.current.toLowerCase()
+      // lfoOscillator.frequency.value = effectsSettings.lfoFrequencyDefault
+      // vcoOscillator.lfoOscillator = lfoOscillator;
+
+      // Create LFO Gain
+      // let lfoGain = audioContext.createGain();
+      // lfoGain.gain.value = lfoGainRef.current;
+      // vcoOscillator.lfoGain = lfoGain
+
+      // Create VCF Filter
+      let vcfFilter = new BiquadFilterNode(audioContext, {
+        type: vcfFilterRef.current.toLowerCase(),
+        frequency: vcfFrequencyRef.current,
+        Q: vcfQRef.current
+      })
+      vcoOscillator.vcfFilter = vcfFilter
+      vcoOscillator.vcfFilter = vcfFilter;
       
-      console.log(vcoOscillator)
+      // Create Output Gain
+      let outputGain = audioContext.createGain();
+      let outputGainValue = (1 / 127) * velocity
+      outputGain.gain.value = outputGainValue
+      vcoOscillator.outputGain = outputGain
 
-        
-      // Create Oscillator
-      let oscillator = audioContext.createOscillator();
+      // Create Synth Voice Object
       let noteString = note.toString()
-
-      // Create Oscillator Gain
-      let oscillatorGain = audioContext.createGain();
-      oscillatorGain.gain.value = effectsSettings.oscillatorGain;
-
-      oscillator.gain = oscillatorGain
-      oscillator.type = toneWaveRef.current.toLowerCase()
-      oscillator.frequency.value = midiToFrequency(note)
-
-      // Create Velocity Gain
-      let velocityGain = audioContext.createGain();
-      let velocityGainValue = (1 / 127) * velocity
-      velocityGain.gain.value = velocityGainValue
-      oscillator.velocity = velocityGainValue
-
-      // Create High Pass Filter
-      let highPassFilter = new BiquadFilterNode(audioContext, {
-        type: 'highpass',
-        frequency: highPassFrequencyRef.current,
-        // Q: -3.2
-      })
-      // highPassFilters[note] = highPassFilter
-      oscillator.highPassFilter = highPassFilter
-
-      // Create Low Pass Filter
-      let lowPassFilter = new BiquadFilterNode(audioContext, {
-        type: 'lowpass',
-        frequency: lowPassFrequencyRef.current,
-        // Q: -3.2
-      })
-      // lowPassFilters[note] = lowPassFilter
-      oscillator.lowPassFilter = lowPassFilter
-
-      // Create Oscillator Object
-      oscillators[noteString] = oscillator
+      synthVoices[noteString] = vcoOscillator
 
       // Connect Modules
-      // oscillator.connect(vcoGain)
-      // vcoGain.connect(oscillatorGain)
-      oscillator.connect(oscillatorGain)
-      oscillatorGain.connect(velocityGain)
-      velocityGain.connect(highPassFilter)
-      highPassFilter.connect(lowPassFilter)
-      highPassFilter.connect(audioContext.destination)
+      
 
-      oscillator.start()
+      lfoOscillatorRef.current.lfoGain.connect(vcaGain.gain)
+      vcoOscillator.connect(vcaGain)
+
+
+      vcaGain.connect(vcfFilter)
+      vcfFilter.connect(outputGain)
+
+      // lfoOscillatorRef.current.connect(lfoGain)
+      // lfoGain.connect(vcfFilter.frequency)
+
+      // outputGain.connect(audioContext.destination)
+
+      vcaGain.connect(audioContext.destination)
+
+      // lfoOscillatorRef.current.lfoGain.connect(audioContext.destination)
+
+      vcoOscillator.start(lfoTime)
+      // lfoOscillator.start(lfoTime)
 
       updateActiveNotes(midiMessage)
 
@@ -202,18 +253,25 @@ export default function MIDIInput() {
   const noteOff = (midiMessage) => {
 
     let note = midiMessage.data[1]
-    // console.log("Note Off")
 
     if (audioContext) {
       let noteString = note.toString()
-      const currentOscillator = oscillators[noteString]
+      const currentOscillator = synthVoices[noteString]
 
       if (currentOscillator) {
-        const currentGain = currentOscillator.gain
         let fadeOut = 0.003;
-        currentGain.gain.setValueAtTime(currentGain.gain.value, audioContext.currentTime)
-        currentGain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + fadeOut)
-        delete oscillators[noteString]
+
+        
+
+        // const currentGain = currentOscillator.outputGain
+        const currentVcaGain = currentOscillator.vcaGain
+        // const currentLfoGain = currentOscillator.lfoGain
+        
+        currentVcaGain.gain.setValueAtTime(currentVcaGain.gain.value, audioContext.currentTime)
+        currentVcaGain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + fadeOut)
+
+        
+        delete synthVoices[noteString]
 
         setTimeout(() => {
           currentOscillator.stop()
@@ -246,13 +304,15 @@ export default function MIDIInput() {
     console.log("Pitch Bend")
   }
 
-  const updateOscillators = (attribute, updatedValue) => {
-    Object.entries(oscillators).map(([key, value]) => {
-      return value[attribute] = updatedValue
+  const updateSynthVoices = (attribute, updatedValue) => {
+    Object.entries(synthVoices).map(([key, value]) => {
+      // console.log(value)
+      value[attribute] = updatedValue
+      // console.log(value)
     })
   }
 
-  // updateOscillators('frequency.value', highPassFrequencyRef.current)
+  // updateSynthVoices('frequency.value', highPassFrequencyRef.current)
 
 
   // RANGE
@@ -265,35 +325,73 @@ export default function MIDIInput() {
 
     switch (inputNumber) {
 
-      case midiMapping.toneWaveInput:
-        let toneWaveStepSize = 128 / toneWaves.length
-        let toneWaveIndex = Math.floor(inputValue / toneWaveStepSize)
-        setToneWave(toneWaves[toneWaveIndex])
-        break
-
-      case midiMapping.vcoWaveInput:
+      case midiMapping.vcoWaveTypeInput:
         let vcoWaveStepSize = 128 / vcoWaves.length
         let vcoWaveIndex = Math.floor(inputValue / vcoWaveStepSize)
         setVcoWave(vcoWaves[vcoWaveIndex])
+        // updateSynthVoices('type', vcoWaves[vcoWaveIndex].toLowerCase())
+        Object.entries(synthVoices).map(([key, value]) => {
+          value['type'] = vcoWaves[vcoWaveIndex].toLowerCase()
+        })
         break
 
-      case midiMapping.highPassFrequencyInput:
-        let normalizedHighPassFrequency = normalize(inputValue, 127, effectsSettings.highPassMin, effectsSettings.highPassMax)
-        setHighPassFrequency(normalizedHighPassFrequency)
-        updateOscillators('frequency.value', highPassFrequencyRef.current)
-        // Object.entries(highPassFilters).map(([key, value]) => {
-        //   return value.frequency.value = highPassFrequencyRef.current
-        //   // console.log(value.frequency)
-        // })
+      case midiMapping.vcaGainInput:
+        let normalizedVcaGain = normalize(inputValue, 127, effectsSettings.vcaGainMin, effectsSettings.vcaGainMax)
+        setVcaGain(normalizedVcaGain)
+        Object.entries(synthVoices).map(([key, value]) => {
+          // console.log(value)
+          value['vcaGain']['gain']['value'] = normalizedVcaGain
+        })
         break
 
-      case midiMapping.lowPassFrequencyInput:
-        let normalizedLowPassFrequency = normalize(inputValue, 127, effectsSettings.lowPassMin, effectsSettings.lowPassMax)
-        setLowPassFrequency(normalizedLowPassFrequency)
-        updateOscillators('frequency.value', lowPassFrequencyRef.current)
-        // Object.entries(lowPassFilters).map(([key, value]) => {
-        //   return value.frequency.value = lowPassFrequencyRef.current
-        // })
+      case midiMapping.lfoWaveTypeInput:
+        let lfoWaveTypeStepSize = 128 / lfoWaveTypes.length
+        let lfoWaveTypeIndex = Math.floor(inputValue / lfoWaveTypeStepSize)
+        setLfoWaveType(lfoWaveTypes[lfoWaveTypeIndex])
+        if(lfoWaveTypeRef.current) {
+          lfoOscillatorRef.current.type = lfoWaveTypeRef.current.toLowerCase()
+        }
+        break
+
+      case midiMapping.lfoFrequencyInput:
+        let normalizedLfoFrequency = normalize(inputValue, 127, effectsSettings.lfoFrequencyMin, effectsSettings.lfoFrequencyMax)
+        setLfoFrequency(normalizedLfoFrequency)
+        if(lfoOscillatorRef.current){
+          lfoOscillatorRef.current.frequency.value = normalizedLfoFrequency
+        }
+        break
+
+      case midiMapping.lfoGainInput:
+        let normalizeLfoGain = normalize(inputValue, 127, effectsSettings.lfoGainMin, effectsSettings.lfoGainMax)
+        setLfoGain(normalizeLfoGain)
+        if(lfoOscillatorRef.current) {
+          lfoOscillatorRef.current.lfoGain.gain.value = normalizeLfoGain
+        }
+        break
+
+      case midiMapping.vcfTypeInput:
+        let vcfStepSize = 128 / vcfFilters.length
+        let vcfWaveIndex = Math.floor(inputValue / vcfStepSize)
+        setVcfFilter(vcfFilters[vcfWaveIndex])
+        Object.entries(synthVoices).map(([key, value]) => {
+          value['vcfFilter']['type'] = vcfFilterRef.current.toLowerCase()
+        })
+        break
+
+      case midiMapping.vcfFrequencyInput:
+        let normalizedVcfFrequency = normalize(inputValue, 127, effectsSettings.vcfFrequencyMin, effectsSettings.vcfFrequencyMax)
+        setVcfFrequency(normalizedVcfFrequency)
+        Object.entries(synthVoices).map(([key, value]) => {
+          value['vcfFilter']['frequency']['value'] = normalizedVcfFrequency
+        })
+        break
+
+      case midiMapping.outputGainInput:
+        let normalizedOutputGain = normalize(inputValue, 127, effectsSettings.outputGainMin, effectsSettings.outputGainMax)
+        setVcfFrequency(normalizedVcfFrequency)
+        Object.entries(synthVoices).map(([key, value]) => {
+          value['vcfFilter']['frequency']['value'] = normalizedVcfFrequency
+        })
         break
 
     }
@@ -347,21 +445,41 @@ export default function MIDIInput() {
     }
   }
 
+  // let roundDecimal = (number) => {
+  //   Math.round((number + Number.EPSILON) * 100) / 100}
+  // }
+
 
   return (
     <section className="input-section">
       <section className="settings-wrapper">
+        {/* <p>{lfoGainRef.current}</p> */}
+        {/* <p>lfo freq: {lfoFrequencyRef.current}</p> */}
+        {/* <p>lfo gain: {lfoFrequencyRef.current.lfoGain.gain.value}</p> */}
         <WaveWidget 
-          label="Tone" 
-          waveType={toneWave} 
-          min={normalize(highPassFrequencyRef.current, effectsSettings.highPassMax, 0, 50)} 
-          max={normalize(lowPassFrequencyRef.current, effectsSettings.lowPassMax, 0, 50)} 
-        /> 
-        {/* <WaveWidget 
           label="VCO" 
-          waveType={vcoWave} 
-          min={normalize(highPassFrequencyRef.current, effectsSettings.highPassMax, 0, 50)} 
-          max={normalize(lowPassFrequencyRef.current, effectsSettings.lowPassMax, 0, 50)} 
+          waveType={vcoWaveRef.current} 
+          icon={true}
+          info={{'gain': vcaGainRef.current}}
+          gain={vcaGainRef.current}
+          // min={normalize(highPassFrequencyRef.current, effectsSettings.highPassMax, 0, 50)} 
+          // max={normalize(lowPassFrequencyRef.current, effectsSettings.lowPassMax, 0, 50)} 
+        /> 
+        <WaveWidget 
+          label="LFO" 
+          waveType={lfoWaveType} 
+          info={{'freq': lfoFrequencyRef.current, 'gain': lfoGainRef.current}}
+          icon={true}
+          // gain={}
+          // min={normalize(highPassFrequencyRef.current, effectsSettings.highPassMax, 0, 50)} 
+          // max={normalize(lowPassFrequencyRef.current, effectsSettings.lowPassMax, 0, 50)} 
+        />
+        {/* <WaveWidget 
+          label="VCF" 
+          waveType={vcfFilter} 
+          icon={false}
+          // min={normalize(highPassFrequencyRef.current, effectsSettings.highPassMax, 0, 50)} 
+          // max={normalize(lowPassFrequencyRef.current, effectsSettings.lowPassMax, 0, 50)} 
         /> */}
       </section>
       <div className="notes-wrapper">

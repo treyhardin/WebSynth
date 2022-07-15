@@ -3,6 +3,9 @@
     flex-direction: row;
     align-items: center;
     gap: var(--size-s);
+    flex: 1 0 50%;
+    border: 1px solid var(--color-green);
+    padding: var(--size-s);
 }
 
 .wave-widget-icon {
@@ -13,8 +16,17 @@
     max-height: 40px;
     border-radius: 100%;
     border: 2px solid var(--color-ink);
-    background-color: var(--color-ink);
+    background-color: var(--color-green);
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.wave-widget-icon .wave-widget-label{
+    color: var(--color-ink);
+    z-index: 2;
+    /* mix-blend-mode: difference; */
 }
 
 .wave-widget-icon::before {
@@ -48,4 +60,15 @@
     justify-content: center;
     align-items: flex-start;
     gap: var(--size-s)
+}
+
+.widget-info-text {
+    text-align: left;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.widget-info-label {
+    color: var(--color-green);
 }
