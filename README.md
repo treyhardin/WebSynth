@@ -29,7 +29,7 @@ Set up is pretty easy, so at this point you should be jamming on your MIDI keybo
 
 ## MIDI Configuration
 
-The MIDI mappings were originally set up for the [Arturia Minilab Mk II](https://www.arturia.com/products/hybrid-synths/minilab-mkii/overview) but can easily be configured for other devices. All core settings can be accessed via `src/midi-config.js`. I'll probably add a MIDI configuration step in the frontend at some point but, but 🤷‍♂️.
+The MIDI mappings were originally set up for the [Arturia Minilab Mk II](https://www.arturia.com/products/hybrid-synths/minilab-mkii/overview) but can easily be configured for other devices. All core settings can be accessed via `src/midi-config.js`. See comments in `keyDownHandler` and `rangeHandler` for instructions - basically, just `console.log` the input parameter to see your input data. It'll output an array with the following values `[status code, note, velocity]`. The `note` value is what you'll wanna plug in to `midi-config.js`. I'll probably add a MIDI configuration step in the frontend at some point but, but 🤷‍♂️.
 
 ## Coming Soon
 
