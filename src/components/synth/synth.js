@@ -1,17 +1,17 @@
 import { useEffect, useState, useRef } from 'react'
 import { effectsSettings, midiMapping } from '../../midi-config'
-// import { cloneDeep } from 'lodash'
 import { midiNoteToFrequency, getColorFromNote, getNameFromNoteNumber, getOctaveFromNoteNumber, normalize } from '../../helpers/helpers'
 import Input from '../input/input'
 import Landing from '../landing/landing'
 import './synth.css'
 import SettingsWidget from '../settings-widget/settings-widget'
-import { clone, cloneDeep, cloneDeepWith } from 'lodash'
 
 
 export default function Synth(props) {
 
     const [ synthActive, setSynthActive ] = useState(false)
+    let synthActiveRef = useRef()
+    synthActiveRef = synthActive
 
     const [ audioContext, setAudioContext ] = useState(null)
     let audioContextRef = useRef()
@@ -132,63 +132,60 @@ export default function Synth(props) {
 
     const keyDownHandler = (input) => {
 
-            let note = input.data[1]
-            let velocity = input.data[2]
+        let note = input.data[1]
+        let velocity = input.data[2]
 
-            // Create VCO (Base Tone Oscillator)
-            let VCO = audioContextRef.current.createOscillator();
-            VCO.type = VCOTypeRef.current.toLowerCase()
-            VCO.frequency.value = midiNoteToFrequency(note)
-            VCO.start(audioContextRef.current.currentTime)
+        // Create VCO (Base Tone Oscillator)
+        let VCO = audioContextRef.current.createOscillator();
+        VCO.type = VCOTypeRef.current.toLowerCase()
+        VCO.frequency.value = midiNoteToFrequency(note)
+        VCO.start(audioContextRef.current.currentTime)
 
-            // Create VCA (Base Tone Gain)
-            let VCA = audioContextRef.current.createGain()
-            VCA.gain.value = (VCAGainRef.current / 127) * velocity;
-            VCO.VCA = VCA
+        // Create VCA (Base Tone Gain)
+        let VCA = audioContextRef.current.createGain()
+        VCA.gain.value = (VCAGainRef.current / 127) * velocity;
+        VCO.VCA = VCA
 
-            // Create LFO Gain
-            let LFOGain = audioContextRef.current.createGain()
-            LFOGain.gain.value = LFOGainRef.current;
-            LFORef.current.connect(LFOGain)
-            LFORef.current.LFOGain = LFOGain
+        // Create LFO Gain
+        let LFOGain = audioContextRef.current.createGain()
+        LFOGain.gain.value = LFOGainRef.current;
+        LFORef.current.connect(LFOGain)
+        LFORef.current.LFOGain = LFOGain
 
-            // Add LFO to Object
-            LFORef.current.LFOGain.gain.value = LFOGainRef.current
-            LFORef.current.type = LFOTypeRef.current.toLowerCase()
-            VCO.LFO = LFORef.current
+        // Add LFO to Object
+        LFORef.current.LFOGain.gain.value = LFOGainRef.current
+        LFORef.current.type = LFOTypeRef.current.toLowerCase()
+        VCO.LFO = LFORef.current
 
-            // Create VCF
-            let VCF = new BiquadFilterNode(audioContextRef.current, {
-                type: VCFTypeRef.current.toLowerCase(),
-                q: VCFQRef.current,
-                frequency: VCFFrequencyRef.current,
-                gain: VCFGainRef.current
-            })
-            VCO.VCF = VCF
-            
-            // Create Output Gain
-            let output = audioContextRef.current.createGain()
-            output.gain.value = outputGainRef.current
-            VCO.output = output
+        // Create VCF
+        let VCF = new BiquadFilterNode(audioContextRef.current, {
+            type: VCFTypeRef.current.toLowerCase(),
+            q: VCFQRef.current,
+            frequency: VCFFrequencyRef.current,
+            gain: VCFGainRef.current
+        })
+        VCO.VCF = VCF
+        
+        // Create Output Gain
+        let output = audioContextRef.current.createGain()
+        output.gain.value = outputGainRef.current
+        VCO.output = output
 
-            // Connect Modules
-            LFORef.current.LFOGain.connect(VCA.gain)
-            VCO.connect(VCA)
-            VCA.connect(VCF)
-            // VCA.connect(output)
-            VCF.connect(output)
-            // VCA.connect(audioContextRef.current.destination)
-            // VCA.connect(compressor)
-            output.connect(audioContextRef.current.destination)
+        // Connect Modules
+        LFORef.current.LFOGain.connect(VCA.gain)
+        VCO.connect(VCA)
+        VCA.connect(VCF)
+        VCF.connect(output)
+        output.connect(audioContextRef.current.destination)
 
-            // Update Active Notes
-            let newActiveNotes = activeNotes
-            newActiveNotes[note] = VCO
-            VCO.note = note
-            setActiveNotes(newActiveNotes)
+        // Update Active Notes
+        let newActiveNotes = activeNotes
+        newActiveNotes[note] = VCO
+        VCO.note = note
+        setActiveNotes(newActiveNotes)
 
-            // Force Re-Render
-            setInputStatus(inputStatus => !inputStatus)
+        // Force Re-Render
+        setInputStatus(inputStatus => !inputStatus)
 
     }
 
@@ -353,6 +350,7 @@ export default function Synth(props) {
             padUp={padUpHandler}
             aftertouch={aftertouchHandler}
             pitchBend={pitchBendHandler}
+            synthActive
         />
         <section className='oscillator-wrapper'>
             <SettingsWidget 
