@@ -19,6 +19,8 @@ export default function Synth(props) {
 
     const [ inputStatus, setInputStatus ] = useState(false)
 
+    const [ inputType, setInputType ] = useState('qwerty')
+
 
     /*-- Synth States --*/
 
@@ -138,6 +140,8 @@ export default function Synth(props) {
         let note = input.data[1]
         let velocity = input.data[2]
 
+        console.log(input)
+
         // Create VCO (Base Tone Oscillator)
         let VCO = audioContextRef.current.createOscillator();
         VCO.type = VCOTypeRef.current.toLowerCase()
@@ -193,6 +197,8 @@ export default function Synth(props) {
     }
 
     const keyUpHandler = (input) => {
+
+        console.log(activeNotes)
 
         let note = input.data[1]
         const currentOscillator = activeNotes[note]
@@ -374,18 +380,46 @@ export default function Synth(props) {
             />
         </section>
         <section className='notes-wrapper'>
-            {Object.entries(activeNotes).length <= 0 ? 
-                <p className='note-card note-placeholder'>🎹</p> :
-                Object.entries(activeNotes).map(([key, value]) => {
-                    return (
-                        // <p key={key}>{value.note}</p>
-                        <div key={key} className="note-card" style={getColorFromNote(key)}>
-                            <h3 className="note-name">{getNameFromNoteNumber(key)}</h3>
-                            <p className="note-octave label">{getOctaveFromNoteNumber(key)}</p>
-                        </div>
-                    )
-                })
+        
+            {inputType == 'midi' ?
+                Object.entries(activeNotes).length <= 0 ? 
+                    <p className='note-card note-placeholder'>🎹</p> :
+                    Object.entries(activeNotes).map(([key, value]) => {
+                        return (
+                            // <p key={key}>{value.note}</p>
+                            <div key={key} className="note-card" style={getColorFromNote(key)}>
+                                <h3 className="note-name">{getNameFromNoteNumber(key)}</h3>
+                                <p className="note-octave label">{getOctaveFromNoteNumber(key)}</p>
+                            </div>
+                        )
+                    }) : null
             }
+
+            {inputType == 'qwerty' ?
+                <div className='keyboard-wrapper'>
+                    <span className='keyboard-note label'>a</span>
+                    <span className='keyboard-note black-note label'>w</span>
+                    <span className='keyboard-note label'>s</span>
+                    <span className='keyboard-note label black-note label'>e</span>
+                    <span className='keyboard-note label'>d</span>
+                    <span className='keyboard-note label'>f</span>
+                    <span className='keyboard-note label black-note label'>t</span>
+                    <span className='keyboard-note label'>g</span>
+                    <span className='keyboard-note label black-note label'>y</span>
+                    <span className='keyboard-note label'>h</span>
+                    <span className='keyboard-note label black-note label'>u</span>
+                    <span className='keyboard-note label'>j</span>
+                    <span className='keyboard-note label'>k</span>
+                    <span className='keyboard-note label black-note label'>o</span>
+                    <span className='keyboard-note label'>l</span>
+                    <span className='keyboard-note label black-note label'>p</span>
+                    <span className='keyboard-note label'>;</span>
+                </div>
+                : null
+            }
+
+
+            
         </section>
         <section className='LFO-wrapper'>
             <span className='text-setting'>

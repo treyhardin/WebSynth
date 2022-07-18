@@ -81,6 +81,8 @@ export default function Input(props) {
     window.addEventListener('keydown', (e) => {
         switch (e.key) {
             case 'a':
+                // if (e.repeat) { return }
+                // console.log(e)
                 keyDown({data: [144, 48 + octave * 12, 127]})
                 break
             case 'w':

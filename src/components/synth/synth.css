@@ -76,3 +76,38 @@
     color: var(--color-lightblue);
     font-size: 12vw;
 }
+
+.keyboard-wrapper {
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    align-items: stretch;
+    flex-grow: 1;
+}
+
+.keyboard-note {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    width: calc(100% / 10);
+    height: 100%;
+    flex-grow: 1;
+    background-color: var(--color-reverse);
+    color: var(--color-ink);
+    border: 1px solid var(--color-blue);
+    z-index: 0;
+    padding-bottom: var(--size-s);
+}
+
+.keyboard-note.black-note {
+    z-index: 1;
+    width: 6%;
+    margin: 0 -3% 0 -3%;
+    height: 60%;
+    background-color: var(--color-ink);
+    color: var(--color-reverse);
+    border-radius: 0px 0px 1vw 1vw;
+}
