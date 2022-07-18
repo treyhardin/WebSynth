@@ -19,7 +19,7 @@ export default function Synth(props) {
 
     const [ inputStatus, setInputStatus ] = useState(false)
 
-    const [ inputType, setInputType ] = useState('qwerty')
+    const [ inputType, setInputType ] = useState('midi')
 
 
     /*-- Synth States --*/
