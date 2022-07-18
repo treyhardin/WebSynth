@@ -132,6 +132,9 @@ export default function Synth(props) {
 
     const keyDownHandler = (input) => {
 
+        // Console.log the input here and look for the 2nd item in the array to find your controller's input values
+        // console.log(input)
+
         let note = input.data[1]
         let velocity = input.data[2]
 
@@ -218,8 +221,7 @@ export default function Synth(props) {
 
     const rangeHandler = (input) => {
 
-
-
+        // Console.log the input here and look for the 2nd item in the array to find your controller's input values
         // console.log(input)
 
         let inputNumber = input.data[1]
