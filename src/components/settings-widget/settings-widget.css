@@ -1,19 +1,21 @@
-.wave-widget-wrapper {
+.settings-widget-wrapper {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: var(--size-s);
-    flex: 1 0 50%;
-    border: 1px solid var(--color-green);
-    padding: var(--size-s);
+    flex: 1 1 50%;
+    padding: clamp(10px, var(--size-s), 20px);
+    filter: blur(0.05vw);
 }
 
-.wave-widget-icon {
+.settings-widget-wrapper:not(:last-child) {
+    border-right: 1px solid var(--color-blue);
+}
+
+.settings-widget-icon {
     position: relative;
-    width: var(--size-l);
-    height: var(--size-l);
-    /* max-width: 40px;
-    max-height: 40px; */
+    width: clamp(40px, var(--size-l), 70px);
+    height: clamp(40px, var(--size-l), 70px);
     border-radius: 100%;
     border: 2px solid var(--color-ink);
     background-color: var(--color-green);
@@ -23,13 +25,13 @@
     align-items: center;
 }
 
-.wave-widget-icon .wave-widget-label{
+.settings-widget-icon .settings-widget-label{
     color: var(--color-ink);
     z-index: 2;
     /* mix-blend-mode: difference; */
 }
 
-.wave-widget-icon::before {
+.settings-widget-icon::before {
     content: "";
     position: absolute;
     top: var(--max, 100%);
@@ -40,7 +42,7 @@
     background-color: var(--color-green);
 }
 
-.wave-widget-icon svg {
+.settings-widget-icon svg {
     color: var(--color-reverse);
     animation: wave 3s linear 0s infinite;
     position: absolute;
@@ -49,17 +51,22 @@
     width: 200%;
 }
 
+.settings-widget-text {
+    color: var(--color-green);
+    border-right: 1px solid var(--color-blue);
+}
+
 @keyframes wave {
     from {left: -100%;}
     to {left: 0%;}
 }
 
-.wave-widget-text {
+.settings-widget-info {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    gap: var(--size-s)
+    gap: clamp(5px, var(--size-s), 20px);
 }
 
 .widget-info-text {
@@ -69,6 +76,15 @@
     justify-content: flex-start;
 }
 
-.widget-info-label {
+.settings-info-label {
+    color: var(--color-green);
+}
+
+.text-setting {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1 1 50%;
+    border-right: 1px solid var(--color-blue);
     color: var(--color-green);
 }

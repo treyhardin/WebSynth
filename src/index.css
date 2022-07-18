@@ -2,7 +2,9 @@
   --color-ink: #3c3c3c;
   --color-reverse: #feffe7;
   --color-green: #00c123;
-  --color-blue: #5517ff;
+  --color-blue: #0B008A;
+  --color-lightblue: #A6AFFF;
+  --color-yellow: #FFFA7A;
   --size-l: 8vw;
   --size-m: 4vw;
   --size-s: 2vw;
@@ -20,7 +22,7 @@ html, body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size: 3vw;
+  font-size: clamp(12px, 3vw, 32px);
   min-height: 100vh;
   max-height: 100vh;
   overflow: hidden;
@@ -37,7 +39,7 @@ code {
 }
 
 h1 {
-  font-size: 12vw;
+  font-size: 10vw;
   line-height: 1;
   margin: 0 0 var(--size-s);
 }
@@ -55,16 +57,60 @@ p {
   line-height: 1;
 }
 
+a {
+  color: var(--color-lightblue);
+}
+
 .label {
-  font-size: 2vw;
+  font-size: clamp(10px, 2vw, 18px);
   text-transform: uppercase;
 }
 
 button {
-  /* border: 1px solid var(--ink); */
-  padding: var(--size-m);
-  background: var(--color-green);
+  position: relative;
+  overflow: hidden;
+  padding: var(--size-m) var(--size-l);
+  background: rgb(255,255,255);
   font-family: inherit;
+  font-size: inherit;
+  color: var(--color-blue);
+  background: var(--color-lightblue);  
   text-transform: uppercase;
+  margin: var(--size-m);
+  border: unset;
+  border-radius: var(--size-l);
+  filter: drop-shadow(0vw 0vw 1vw var(--color-yellow));
+  transition: transform 0.3s ease-out;
 }
 
+button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(180deg, rgba(228,231,255,1) 0%, rgba(255,255,255,1) 49%, rgba(255,250,122,1) 100%);
+  transition: opacity 0.3s ease-out;
+  z-index: -1;
+}
+
+button:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+  filter: drop-shadow(0vw 0vw 1vw var(--color-lightblue));
+}
+
+button:hover::before {
+  opacity: 0;
+}
+
+/* button::after {
+  content: "";
+  width: var(--button-notch);
+  background-color: var(--color-reverse);
+  position: absolute;
+  right: calc(var(--button-notch) * -1);
+  top: var(--button-notch);
+  bottom: var(--button-notch);
+} */
