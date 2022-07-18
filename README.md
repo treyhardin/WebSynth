@@ -1,4 +1,4 @@
-# Raspberry Pi Synth
+# WebSynth.io
 
 A simple React-based synthesizer built on the [Web MIDI API](https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API) and [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API). Originally built for Raspberry Pi with a mini display, but compatible with any Chromium browser. 
 
