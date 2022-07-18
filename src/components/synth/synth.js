@@ -143,7 +143,7 @@ export default function Synth(props) {
         console.log(input)
 
         // Create VCO (Base Tone Oscillator)
-        let VCO = audioContextRef.current.createOscillator();
+        let VCO = audioContextRef.current.createOscillator()
         VCO.type = VCOTypeRef.current.toLowerCase()
         VCO.frequency.value = midiNoteToFrequency(note)
         VCO.start(audioContextRef.current.currentTime)
@@ -242,7 +242,7 @@ export default function Synth(props) {
                 let VCOWaveTypeIndex = Math.round(inputValue / waveToggleStepSize)
                 setVCOType(waveTypes[VCOWaveTypeIndex])
                 Object.entries(activeNotes).map(([key, value]) => {
-                    value['type'] = waveTypes[VCOWaveTypeIndex].toLowerCase()
+                    return value['type'] = waveTypes[VCOWaveTypeIndex].toLowerCase()
                 })
                 break
 
@@ -250,7 +250,7 @@ export default function Synth(props) {
                 let normalizedVCAGain = normalize(inputValue, 127, effectsSettings.VCAGainMin, effectsSettings.VCAGainMax)
                 setVCAGain(normalizedVCAGain)
                 Object.entries(activeNotes).map(([key, value]) => {
-                    value['VCA']['gain']['value'] = normalizedVCAGain
+                    return value['VCA']['gain']['value'] = normalizedVCAGain
                 })
                 break
 
@@ -259,7 +259,7 @@ export default function Synth(props) {
                 setLFOType(waveTypes[LFOWaveTypeIndex])
 
                 Object.entries(activeNotes).map(([key, value]) => {
-                    value['LFO']['type'] = waveTypes[LFOWaveTypeIndex].toLowerCase()
+                    return value['LFO']['type'] = waveTypes[LFOWaveTypeIndex].toLowerCase()
                 })
                 break
 
@@ -268,7 +268,7 @@ export default function Synth(props) {
                 setLFOFrequency(normalizedLFOFrequency)
 
                 Object.entries(activeNotes).map(([key, value]) => {
-                    value['LFO']['frequency']['value'] = normalizedLFOFrequency
+                    return value['LFO']['frequency']['value'] = normalizedLFOFrequency
                 })
                 break
 
@@ -276,7 +276,7 @@ export default function Synth(props) {
                 let normalizedLFOGain = normalize(inputValue, 127, effectsSettings.LFOGainMin, effectsSettings.LFOGainMax)
                 setLFOGain(normalizedLFOGain)
                 Object.entries(activeNotes).map(([key, value]) => {
-                    value['LFO']['LFOGain']['gain']['value'] = normalizedLFOGain
+                    return value['LFO']['LFOGain']['gain']['value'] = normalizedLFOGain
                 })
                 break
 
@@ -284,7 +284,7 @@ export default function Synth(props) {
                 let VCFTypeIndex = Math.round(inputValue / VCFToggleStepSize)
                 setVCFType(VCFTypes[VCFTypeIndex])
                 Object.entries(activeNotes).map(([key, value]) => {
-                    value['VCF']['type'] = VCFTypes[VCFTypeIndex].toLowerCase()
+                    return value['VCF']['type'] = VCFTypes[VCFTypeIndex].toLowerCase()
                 })
                 break
 
@@ -292,7 +292,7 @@ export default function Synth(props) {
                 let normalizedVCFQ = normalize(inputValue, 127, effectsSettings.VCFQMin, effectsSettings.VCFQMax)
                 setVCFQ(normalizedVCFQ)
                 Object.entries(activeNotes).map(([key, value]) => {
-                    value['VCF']['q'] = normalizedVCFQ
+                    return value['VCF']['q'] = normalizedVCFQ
                 })
                 break
 
@@ -300,7 +300,7 @@ export default function Synth(props) {
                 let normalizedVCFFrequency = normalize(inputValue, 127, effectsSettings.VCFFrequencyMin, effectsSettings.VCFFrequencyMax)
                 setVCFFrequency(normalizedVCFFrequency)
                 Object.entries(activeNotes).map(([key, value]) => {
-                    value['VCF']['frequency']['value'] = normalizedVCFFrequency
+                    return value['VCF']['frequency']['value'] = normalizedVCFFrequency
                 })
                 break
 
@@ -308,7 +308,7 @@ export default function Synth(props) {
                 let normalizedVCFGain = normalize(inputValue, 127, effectsSettings.VCFGainMin, effectsSettings.VCFGainMax)
                 setVCFGain(normalizedVCFGain)
                 Object.entries(activeNotes).map(([key, value]) => {
-                    value['VCF']['gain']['value'] = normalizedVCFGain
+                    return value['VCF']['gain']['value'] = normalizedVCFGain
                 })
                 break
 
@@ -317,7 +317,7 @@ export default function Synth(props) {
                 setOutputGain(normalizedOutputGain)
                 Object.entries(activeNotes).map(([key, value]) => {
                     // console.log(value)
-                    value['output']['gain']['value'] = normalizedOutputGain
+                    return value['output']['gain']['value'] = normalizedOutputGain
                 })
                 break
 
@@ -343,7 +343,7 @@ export default function Synth(props) {
 
         Object.entries(activeNotes).map(([key, value]) => {
             let originalFrequency = midiNoteToFrequency(key)
-            value.frequency.value = originalFrequency + inputValue * pitchBendStrength
+            return value.frequency.value = originalFrequency + inputValue * pitchBendStrength
         })
     }
     
@@ -381,7 +381,7 @@ export default function Synth(props) {
         </section>
         <section className='notes-wrapper'>
         
-            {inputType == 'midi' ?
+            {inputType === 'midi' ?
                 Object.entries(activeNotes).length <= 0 ? 
                     <p className='note-card note-placeholder'>🎹</p> :
                     Object.entries(activeNotes).map(([key, value]) => {
@@ -395,7 +395,7 @@ export default function Synth(props) {
                     }) : null
             }
 
-            {inputType == 'qwerty' ?
+            {inputType === 'qwerty' ?
                 <div className='keyboard-wrapper'>
                     <span className='keyboard-note label'>a</span>
                     <span className='keyboard-note black-note label'>w</span>

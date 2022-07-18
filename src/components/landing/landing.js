@@ -1,17 +1,8 @@
-import {useCallback, useEffect, useMemo, useState} from 'react'
-import { FullscreenEnabled } from '../../App'
-import { useFullscreenContext, useFullscreenUpdateContext } from '../../contexts/FullscreenContext'
-import Input from '../input/input'
-
 import './landing.css'
 
 export default function Landing(props) {
 
-  // DELETE THIS
-  const isFullscreen = useFullscreenContext()
-  const toggleFullscreen = useFullscreenUpdateContext()
-
-  if (!isFullscreen && !props.synthActive) {
+  if (!props.synthActive) {
     return (
       <section className="landing-screen">
         <div className='landing-title-wrapper'>
