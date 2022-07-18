@@ -5,7 +5,7 @@
     gap: var(--size-s);
     flex: 1 1 50%;
     padding: clamp(10px, var(--size-s), 20px);
-    filter: blur(0.05vw);
+    /* filter: blur(0.05vw); */
 }
 
 .settings-widget-wrapper:not(:last-child) {
