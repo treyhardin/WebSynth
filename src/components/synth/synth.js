@@ -378,8 +378,8 @@ export default function Synth(props) {
                     return (
                         // <p key={key}>{value.note}</p>
                         <div key={key} className="note-card" style={getColorFromNote(key)}>
-                            <p className="note-name">{getNameFromNoteNumber(key)}</p>
-                            <p className="note-octave">{getOctaveFromNoteNumber(key)}</p>
+                            <h3 className="note-name">{getNameFromNoteNumber(key)}</h3>
+                            <p className="note-octave label">{getOctaveFromNoteNumber(key)}</p>
                         </div>
                     )
                 })

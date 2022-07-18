@@ -45,11 +45,15 @@ h1 {
 }
 
 h2 {
-
+  font-size: 8vw;
+  line-height: 1;
+  margin: 0 0 var(--size-s);
 }
 
 h3 {
-
+  font-size: 6vw;
+  line-height: 1;
+  margin: 0 0 var(--size-s);
 }
 
 p {

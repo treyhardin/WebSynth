@@ -54,6 +54,22 @@
     align-items: center;
     flex: 1 1 100%;
     align-self: stretch;
+    color: var(--color-reverse);
+}
+
+.note-card .note-name {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0;
+    mix-blend-mode: difference;
+}
+
+.note-card .note-octave {
+    flex-grow: 0;
+    padding: var(--size-s);
+    mix-blend-mode: difference;
 }
 
 .note-card.note-placeholder {
