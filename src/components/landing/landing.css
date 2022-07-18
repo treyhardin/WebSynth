@@ -13,7 +13,7 @@
   background: rgb(32,27,85);
   background: radial-gradient(circle, rgba(32,27,85,1) 0%, rgba(2,0,23,1) 100%);
   color: var(--color-yellow);
-  padding: clamp(0px, var(--size-l), 80px);
+  padding: clamp(20px, var(--size-l), 80px);
   filter: blur(0.05vw);
 }
 
@@ -121,4 +121,8 @@
 
 .landing-footer {
 
+}
+
+.landing-support-message {
+  margin-bottom: var(--size-m);
 }

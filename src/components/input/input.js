@@ -1,16 +1,6 @@
 import { useEffect } from "react";
 
 export default function Input(props) {
-
-    useEffect(() => {
-        // Check Browser Support
-        if (navigator.requestMIDIAccess) {
-            navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure)
-        } else {
-            navigator.requestMIDIAccess().then(res => console.log(res))
-            console.log("Browser does not support MIDI access")
-        }
-    }, [])
     
 
     // Handle MIDI Success
@@ -44,7 +34,7 @@ export default function Input(props) {
     const getMIDIMessage = (midiMessage) => {
 
         // Map Inputs for Active Device
-        if (midiMessage.target == midiMessage.currentTarget) {
+        if (midiMessage.target === midiMessage.currentTarget) {
             // console.log(midiMessage)
             switch (midiMessage.data[0]) {
                 case 144:
@@ -68,11 +58,22 @@ export default function Input(props) {
                 case 224:
                     pitchBend(midiMessage)
                     break
+                default:
+                    break
             }
 
         }
 
     }
+
+    useEffect(() => {
+        // Check Browser Support
+        if (navigator.requestMIDIAccess && "requestMIDIAccess" in navigator) {
+            navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure)
+        } else {
+            console.log("Browser does not support MIDI access")
+        }
+    }, [])
 
 
     // Add Computer Keyboard Support
