@@ -9,21 +9,26 @@ import SettingsWidget from '../settings-widget/settings-widget'
 
 export default function Synth(props) {
 
+    // Synth Active State
     const [ synthActive, setSynthActive ] = useState(false)
     let synthActiveRef = useRef()
-    synthActiveRef = synthActive
+    synthActiveRef.current = synthActive
 
+    // Audio Content State
     const [ audioContext, setAudioContext ] = useState(null)
     let audioContextRef = useRef()
     audioContextRef.current = audioContext
 
+    // Hacky State to Force Rerender on Input Change
     const [ inputStatus, setInputStatus ] = useState(false)
 
+    // Input Source State
     const [ inputType, setInputType ] = useState('midi')
 
 
     /*-- Synth States --*/
 
+    // All API Supported Waveshapes
     let waveTypes = ['Sine', 'Sawtooth', 'Square', 'Triangle']
 
     // Active Notes State
@@ -108,7 +113,7 @@ export default function Synth(props) {
 
         setOutputGain(effectsSettings.outputGainDefault)
         
-        if(synthActive && !audioContext) {
+        if(synthActiveRef.current && !audioContext) {
             setAudioContext(new AudioContext())
         }
 
@@ -126,9 +131,9 @@ export default function Synth(props) {
         
     }, [synthActive, audioContext])
 
-    const activateSynth = () => {
-        setSynthActive(true)
-    }
+    // const activateSynth = () => {
+    //     setSynthActive(true)
+    // }
 
     /*-- Handle Inputs --*/
 
@@ -140,7 +145,9 @@ export default function Synth(props) {
         let note = input.data[1]
         let velocity = input.data[2]
 
-        console.log(input)
+        // console.log(synthActiveRef.current)
+
+        // console.log('KeyDown')
 
         // Create VCO (Base Tone Oscillator)
         let VCO = audioContextRef.current.createOscillator()
@@ -198,7 +205,7 @@ export default function Synth(props) {
 
     const keyUpHandler = (input) => {
 
-        console.log(activeNotes)
+        // console.log(activeNotes)
 
         let note = input.data[1]
         const currentOscillator = activeNotes[note]
@@ -320,6 +327,8 @@ export default function Synth(props) {
                     return value['output']['gain']['value'] = normalizedOutputGain
                 })
                 break
+            default:
+                break
 
         }
     }
@@ -349,7 +358,12 @@ export default function Synth(props) {
     
     return (
         <div className='synth-wrapper'>
-        <Landing activateSynth={activateSynth} synthActive={synthActive} setAudioContext={setAudioContext} />
+        <Landing 
+            // activateSynth={activateSynth} 
+            synthActive={synthActiveRef.current} 
+            setAudioContext={setAudioContext}
+            setSynthActive={setSynthActive} 
+        />
         <Input 
             keyDown={keyDownHandler} 
             keyUp={keyUpHandler}
@@ -358,7 +372,7 @@ export default function Synth(props) {
             padUp={padUpHandler}
             aftertouch={aftertouchHandler}
             pitchBend={pitchBendHandler}
-            synthActive
+            synthActive={synthActiveRef.current}
         />
         <section className='oscillator-wrapper'>
             <SettingsWidget 

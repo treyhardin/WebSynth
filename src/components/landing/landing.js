@@ -3,7 +3,6 @@ import './landing.css'
 export default function Landing(props) {
 
   let hasMIDISupport = "requestMIDIAccess" in navigator
-  console.log(hasMIDISupport)
 
   if (!props.synthActive) {
     return (
@@ -106,9 +105,9 @@ export default function Landing(props) {
 
         {/* <h1>WebSynth</h1> */}
         <div className='landing-footer'>
-          {hasMIDISupport ? <button onClick={props.activateSynth}>Play Now!</button> : <p className='landing-support-message'>Your browser is too old school for WebSynth &#58;&#40;</p>}
+          {hasMIDISupport ? <button onClick={() => props.setSynthActive(true)}>Play Now!</button> : <p className='landing-support-message'>Your browser is too old school for WebSynth &#58;&#40;</p>}
           
-          <p className='label'>A Project by <a href='https://www.treyhardin.com' target="_blank">Trey Hardin</a></p>
+          <p className='label'>A Project by <a href='https://www.treyhardin.com' target="_blank" rel="noreferrer">Trey Hardin</a></p>
           <div className='background-grid'>
             <span className='grid-cell'></span>
             <span className='grid-cell'></span>

@@ -1,7 +1,19 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 export default function Input(props) {
-    
+
+    // Is Input Enabled
+    let inputActive = useRef();
+    inputActive.current = props.synthActive
+
+    useEffect(() => {
+        // Check Browser Support
+        if (navigator.requestMIDIAccess && "requestMIDIAccess" in navigator) {
+            navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure)
+        } else {
+            console.log("Browser does not support MIDI access")
+        }
+    }, [])
 
     // Handle MIDI Success
     const onMIDISuccess = (midiAccess) => {
@@ -34,7 +46,8 @@ export default function Input(props) {
     const getMIDIMessage = (midiMessage) => {
 
         // Map Inputs for Active Device
-        if (midiMessage.target === midiMessage.currentTarget) {
+        if (midiMessage.target === midiMessage.currentTarget && inputActive.current) {
+
             // console.log(midiMessage)
             switch (midiMessage.data[0]) {
                 case 144:
@@ -66,160 +79,131 @@ export default function Input(props) {
 
     }
 
-    useEffect(() => {
-        // Check Browser Support
-        if (navigator.requestMIDIAccess && "requestMIDIAccess" in navigator) {
-            navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure)
-        } else {
-            console.log("Browser does not support MIDI access")
-        }
-    }, [])
+    
 
 
     // Add Computer Keyboard Support
     let octave = 0;
 
     window.addEventListener('keydown', (e) => {
-        switch (e.key) {
-            case 'a':
-                // if (e.repeat) { return }
-                // console.log(e)
-                keyDown({data: [144, 48 + octave * 12, 127]})
-                break
-            case 'w':
-                keyDown({data: [144, 49 + octave * 12, 127]})
-                break
-            case 's':
-                keyDown({data: [144, 50 + octave * 12, 127]})
-                break
-            case 'w':
-                keyDown({data: [144, 51 + octave * 12, 127]})
-                break
-            case 'a':
-                keyDown({data: [144, 52 + octave * 12, 127]})
-                break
-            case 'w':
-                keyDown({data: [144, 53 + octave * 12, 127]})
-                break
-            case 'a':
-                keyDown({data: [144, 54 + octave * 12, 127]})
-                break
-            case 'w':
-                keyDown({data: [144, 55 + octave * 12, 127]})
-                break
-            case 's':
-                keyDown({data: [144, 50 + octave * 12, 127]})
-                break
-            case 'e':
-                keyDown({data: [144, 51 + octave * 12, 127]})
-                break
-            case 'd':
-                keyDown({data: [144, 52 + octave * 12, 127]})
-                break
-            case 'f':
-                keyDown({data: [144, 53 + octave * 12, 127]})
-                break
-            case 't':
-                keyDown({data: [144, 54 + octave * 12, 127]})
-                break
-            case 'g':
-                keyDown({data: [144, 55 + octave * 12, 127]})
-                break
-            case 'y':
-                keyDown({data: [144, 56 + octave * 12, 127]})
-                break
-            case 'h':
-                keyDown({data: [144, 57 + octave * 12, 127]})
-                break
-            case 'u':
-                keyDown({data: [144, 58 + octave * 12, 127]})
-                break
-            case 'j':
-                keyDown({data: [144, 59 + octave * 12, 127]})
-                break
-            case 'k':
-                keyDown({data: [144, 60 + octave * 12, 127]})
-                break
-            case 'o':
-                keyDown({data: [144, 61 + octave * 12, 127]})
-                break
-            case 'l':
-                keyDown({data: [144, 62 + octave * 12, 127]})
-                break
-            case 'p':
-                keyDown({data: [144, 63 + octave * 12, 127]})
-                break
-            case ';':
-                keyDown({data: [144, 64 + octave * 12, 127]})
-                break
-            case 'z':
-                octave -= 1
-                console.log(octave)
-                break
-            case 'x':
-                octave += 1
-                console.log(octave)
-                break
+        if (inputActive.current) {
+            switch (e.key) {
+                case 'a':
+                    keyDown({data: [144, 48 + octave * 12, 0]})
+                    break
+                case 'w':
+                    keyDown({data: [144, 49 + octave * 12, 0]})
+                    break
+                case 's':
+                    keyDown({data: [144, 50 + octave * 12, 0]})
+                    break
+                case 'e':
+                    keyDown({data: [144, 51 + octave * 12, 0]})
+                    break
+                case 'd':
+                    keyDown({data: [144, 52 + octave * 12, 0]})
+                    break
+                case 'f':
+                    keyDown({data: [144, 53 + octave * 12, 0]})
+                    break
+                case 't':
+                    keyDown({data: [144, 54 + octave * 12, 0]})
+                    break
+                case 'g':
+                    keyDown({data: [144, 55 + octave * 12, 0]})
+                    break
+                case 'y':
+                    keyDown({data: [144, 56 + octave * 12, 0]})
+                    break
+                case 'h':
+                    keyDown({data: [144, 57 + octave * 12, 0]})
+                    break
+                case 'u':
+                    keyDown({data: [144, 58 + octave * 12, 0]})
+                    break
+                case 'j':
+                    keyDown({data: [144, 59 + octave * 12, 0]})
+                    break
+                case 'k':
+                    keyDown({data: [144, 60 + octave * 12, 0]})
+                    break
+                case 'o':
+                    keyDown({data: [144, 61 + octave * 12, 0]})
+                    break
+                case 'l':
+                    keyDown({data: [144, 62 + octave * 12, 0]})
+                    break
+                case 'p':
+                    keyDown({data: [144, 63 + octave * 12, 0]})
+                    break
+                case ';':
+                    keyDown({data: [144, 64 + octave * 12, 0]})
+                    break
+                default:
+                    break
+            }
         }
     })
 
     window.addEventListener('keyup', (e) => {
-
-        switch (e.key) {
-            case 'a':
-                keyUp({data: [144, 48 + octave * 12, 0]})
-                break
-            case 'w':
-                keyUp({data: [144, 49 + octave * 12, 0]})
-                break
-            case 's':
-                keyUp({data: [144, 50 + octave * 12, 0]})
-                break
-            case 'e':
-                keyUp({data: [144, 51 + octave * 12, 0]})
-                break
-            case 'd':
-                keyUp({data: [144, 52 + octave * 12, 0]})
-                break
-            case 'f':
-                keyUp({data: [144, 53 + octave * 12, 0]})
-                break
-            case 't':
-                keyUp({data: [144, 54 + octave * 12, 0]})
-                break
-            case 'g':
-                keyUp({data: [144, 55 + octave * 12, 0]})
-                break
-            case 'y':
-                keyUp({data: [144, 56 + octave * 12, 0]})
-                break
-            case 'h':
-                keyUp({data: [144, 57 + octave * 12, 0]})
-                break
-            case 'u':
-                keyUp({data: [144, 58 + octave * 12, 0]})
-                break
-            case 'j':
-                keyUp({data: [144, 59 + octave * 12, 0]})
-                break
-            case 'k':
-                keyUp({data: [144, 60 + octave * 12, 0]})
-                break
-            case 'o':
-                keyUp({data: [144, 61 + octave * 12, 0]})
-                break
-            case 'l':
-                keyUp({data: [144, 62 + octave * 12, 0]})
-                break
-            case 'p':
-                keyUp({data: [144, 63 + octave * 12, 0]})
-                break
-            case ';':
-                keyUp({data: [144, 64 + octave * 12, 0]})
-                break
-            
+        if (inputActive.current) {
+            switch (e.key) {
+                case 'a':
+                    keyUp({data: [144, 48 + octave * 12, 0]})
+                    break
+                case 'w':
+                    keyUp({data: [144, 49 + octave * 12, 0]})
+                    break
+                case 's':
+                    keyUp({data: [144, 50 + octave * 12, 0]})
+                    break
+                case 'e':
+                    keyUp({data: [144, 51 + octave * 12, 0]})
+                    break
+                case 'd':
+                    keyUp({data: [144, 52 + octave * 12, 0]})
+                    break
+                case 'f':
+                    keyUp({data: [144, 53 + octave * 12, 0]})
+                    break
+                case 't':
+                    keyUp({data: [144, 54 + octave * 12, 0]})
+                    break
+                case 'g':
+                    keyUp({data: [144, 55 + octave * 12, 0]})
+                    break
+                case 'y':
+                    keyUp({data: [144, 56 + octave * 12, 0]})
+                    break
+                case 'h':
+                    keyUp({data: [144, 57 + octave * 12, 0]})
+                    break
+                case 'u':
+                    keyUp({data: [144, 58 + octave * 12, 0]})
+                    break
+                case 'j':
+                    keyUp({data: [144, 59 + octave * 12, 0]})
+                    break
+                case 'k':
+                    keyUp({data: [144, 60 + octave * 12, 0]})
+                    break
+                case 'o':
+                    keyUp({data: [144, 61 + octave * 12, 0]})
+                    break
+                case 'l':
+                    keyUp({data: [144, 62 + octave * 12, 0]})
+                    break
+                case 'p':
+                    keyUp({data: [144, 63 + octave * 12, 0]})
+                    break
+                case ';':
+                    keyUp({data: [144, 64 + octave * 12, 0]})
+                    break
+                default:
+                    break
+                
+            }
         }
-        
     })
 
 

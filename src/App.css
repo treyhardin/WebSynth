@@ -1,8 +1,9 @@
 .App {
   text-align: center;
   /* cursor: none; */
-  min-height: 100vh;
-  max-height: 100vh;
+  /* min-height: 100vh;
+  max-height: 100vh; */
+  height: calc(var(--vh, 1vh) * 100);
   width: 100%;
   display: flex;
   flex-direction: row;

@@ -11,7 +11,14 @@
     "react-scripts": "^4.0.3",
     "web-vitals": "^2.1.4"
   },
+  "devDependencies":{
+    "react-error-overlay": "6.0.9"
+  },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
+  },
   "scripts": {
+    "preinstall": "npx npm-force-resolutions",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
