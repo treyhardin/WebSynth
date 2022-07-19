@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 export default function Input(props) {
 
@@ -86,124 +86,128 @@ export default function Input(props) {
     let octave = 0;
 
     window.addEventListener('keydown', (e) => {
-        if (inputActive.current) {
+        // console.log("KEYDOWN LISTENER")
+        if (inputActive.current && !e.repeat) {
             switch (e.key) {
                 case 'a':
-                    keyDown({data: [144, 48 + octave * 12, 0]})
+                    props.virtualKeyDown(e, {data: [144, 48 + octave * 12, 0]})
                     break
                 case 'w':
-                    keyDown({data: [144, 49 + octave * 12, 0]})
+                    props.virtualKeyDown(e, {data: [144, 49 + octave * 12, 0]})
                     break
                 case 's':
-                    keyDown({data: [144, 50 + octave * 12, 0]})
+                    props.virtualKeyDown(e, {data: [144, 50 + octave * 12, 0]})
                     break
                 case 'e':
-                    keyDown({data: [144, 51 + octave * 12, 0]})
+                    props.virtualKeyDown(e, {data: [144, 51 + octave * 12, 0]})
                     break
                 case 'd':
-                    keyDown({data: [144, 52 + octave * 12, 0]})
+                    props.virtualKeyDown(e, {data: [144, 52 + octave * 12, 0]})
                     break
                 case 'f':
-                    keyDown({data: [144, 53 + octave * 12, 0]})
+                    props.virtualKeyDown(e, {data: [144, 53 + octave * 12, 0]})
                     break
                 case 't':
-                    keyDown({data: [144, 54 + octave * 12, 0]})
+                    props.virtualKeyDown(e, {data: [144, 54 + octave * 12, 0]})
                     break
                 case 'g':
-                    keyDown({data: [144, 55 + octave * 12, 0]})
+                    props.virtualKeyDown(e, {data: [144, 55 + octave * 12, 0]})
                     break
                 case 'y':
-                    keyDown({data: [144, 56 + octave * 12, 0]})
+                    props.virtualKeyDown(e, {data: [144, 56 + octave * 12, 0]})
                     break
                 case 'h':
-                    keyDown({data: [144, 57 + octave * 12, 0]})
+                    props.virtualKeyDown(e, {data: [144, 57 + octave * 12, 0]})
                     break
                 case 'u':
-                    keyDown({data: [144, 58 + octave * 12, 0]})
+                    props.virtualKeyDown(e, {data: [144, 58 + octave * 12, 0]})
                     break
                 case 'j':
-                    keyDown({data: [144, 59 + octave * 12, 0]})
+                    props.virtualKeyDown(e, {data: [144, 59 + octave * 12, 0]})
                     break
                 case 'k':
-                    keyDown({data: [144, 60 + octave * 12, 0]})
+                    props.virtualKeyDown(e, {data: [144, 60 + octave * 12, 0]})
                     break
                 case 'o':
-                    keyDown({data: [144, 61 + octave * 12, 0]})
+                    props.virtualKeyDown(e, {data: [144, 61 + octave * 12, 0]})
                     break
                 case 'l':
-                    keyDown({data: [144, 62 + octave * 12, 0]})
+                    props.virtualKeyDown(e, {data: [144, 62 + octave * 12, 0]})
                     break
                 case 'p':
-                    keyDown({data: [144, 63 + octave * 12, 0]})
+                    props.virtualKeyDown(e, {data: [144, 63 + octave * 12, 0]})
                     break
                 case ';':
-                    keyDown({data: [144, 64 + octave * 12, 0]})
+                    props.virtualKeyDown(e, {data: [144, 64 + octave * 12, 0]})
                     break
                 default:
                     break
             }
         }
+        e.stopImmediatePropagation()
     })
 
     window.addEventListener('keyup', (e) => {
+        // console.log("KEYUP LISTENER")
         if (inputActive.current) {
             switch (e.key) {
                 case 'a':
-                    keyUp({data: [144, 48 + octave * 12, 0]})
+                    props.virtualKeyUp(e, {data: [144, 48 + octave * 12, 0]})
                     break
                 case 'w':
-                    keyUp({data: [144, 49 + octave * 12, 0]})
+                    props.virtualKeyUp(e, {data: [144, 49 + octave * 12, 0]})
                     break
                 case 's':
-                    keyUp({data: [144, 50 + octave * 12, 0]})
+                    props.virtualKeyUp(e, {data: [144, 50 + octave * 12, 0]})
                     break
                 case 'e':
-                    keyUp({data: [144, 51 + octave * 12, 0]})
+                    props.virtualKeyUp(e, {data: [144, 51 + octave * 12, 0]})
                     break
                 case 'd':
-                    keyUp({data: [144, 52 + octave * 12, 0]})
+                    props.virtualKeyUp(e, {data: [144, 52 + octave * 12, 0]})
                     break
                 case 'f':
-                    keyUp({data: [144, 53 + octave * 12, 0]})
+                    props.virtualKeyUp(e, {data: [144, 53 + octave * 12, 0]})
                     break
                 case 't':
-                    keyUp({data: [144, 54 + octave * 12, 0]})
+                    props.virtualKeyUp(e, {data: [144, 54 + octave * 12, 0]})
                     break
                 case 'g':
-                    keyUp({data: [144, 55 + octave * 12, 0]})
+                    props.virtualKeyUp(e, {data: [144, 55 + octave * 12, 0]})
                     break
                 case 'y':
-                    keyUp({data: [144, 56 + octave * 12, 0]})
+                    props.virtualKeyUp(e, {data: [144, 56 + octave * 12, 0]})
                     break
                 case 'h':
-                    keyUp({data: [144, 57 + octave * 12, 0]})
+                    props.virtualKeyUp(e, {data: [144, 57 + octave * 12, 0]})
                     break
                 case 'u':
-                    keyUp({data: [144, 58 + octave * 12, 0]})
+                    props.virtualKeyUp(e, {data: [144, 58 + octave * 12, 0]})
                     break
                 case 'j':
-                    keyUp({data: [144, 59 + octave * 12, 0]})
+                    props.virtualKeyUp(e, {data: [144, 59 + octave * 12, 0]})
                     break
                 case 'k':
-                    keyUp({data: [144, 60 + octave * 12, 0]})
+                    props.virtualKeyUp(e, {data: [144, 60 + octave * 12, 0]})
                     break
                 case 'o':
-                    keyUp({data: [144, 61 + octave * 12, 0]})
+                    props.virtualKeyUp(e, {data: [144, 61 + octave * 12, 0]})
                     break
                 case 'l':
-                    keyUp({data: [144, 62 + octave * 12, 0]})
+                    props.virtualKeyUp(e, {data: [144, 62 + octave * 12, 0]})
                     break
                 case 'p':
-                    keyUp({data: [144, 63 + octave * 12, 0]})
+                    props.virtualKeyUp(e, {data: [144, 63 + octave * 12, 0]})
                     break
                 case ';':
-                    keyUp({data: [144, 64 + octave * 12, 0]})
+                    props.virtualKeyUp(e, {data: [144, 64 + octave * 12, 0]})
                     break
                 default:
                     break
                 
             }
         }
+        e.stopImmediatePropagation()
     })
 
 

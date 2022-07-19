@@ -1,8 +1,66 @@
+import { useState, useRef, useEffect } from 'react'
 import './landing.css'
 
 export default function Landing(props) {
 
+  // const [ isMIDIReady, setIsMIDIReady ] = useState()
+  // let isMIDIReadyRef = useRef()
+  // isMIDIReadyRef.current = isMIDIReady
+
+  const [ MIDIDevices, setMIDIDevices ] = useState(null)
+  let MIDIDevicesRef = useRef()
+  MIDIDevicesRef.current = MIDIDevices
+
   let hasMIDISupport = "requestMIDIAccess" in navigator
+
+  useEffect(() => {
+      // Check Browser Support
+      if (navigator.requestMIDIAccess && hasMIDISupport) {
+          navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure)
+      } else {
+          console.log('Your Browser Does Not Support  MIDI. Switching to Computer Keyboard')
+      }
+  }, [])
+
+  // Handle MIDI Success
+  const onMIDISuccess = (midiAccess) => {
+
+      // Detect Device Change
+      midiAccess.addEventListener('stateChange', updateDevices)
+
+      // Get Compatible Inputs
+      const inputs = midiAccess.inputs;
+
+      // Get Available Devices
+      if (inputs.size > 0) {
+
+        let newDevices = []
+
+        inputs.forEach((input) => {
+          console.log(input)
+          if (input.state === 'connected') {
+            newDevices.push(input.name)
+          }
+        })
+
+        if (newDevices.length <= 0) newDevices = null
+        // newDevices.push(inputs[0])
+        // console.log(inputs)
+        setMIDIDevices(newDevices)
+      }
+
+      props.setNewInputType('midi')
+  }
+
+  // Handle Device List Update
+  const updateDevices = (devices) => {
+      console.log("MIDI Device change")
+  }
+
+  // Handle MIDI Failure
+  const onMIDIFailure = () => {
+    console.log('Could Not Connect to MIDI Cevice.')
+  }
 
   if (!props.synthActive) {
     return (
@@ -105,6 +163,10 @@ export default function Landing(props) {
 
         {/* <h1>WebSynth</h1> */}
         <div className='landing-footer'>
+          {MIDIDevicesRef.current ? 
+            MIDIDevicesRef.current.map((device, i) => {
+              return <p key={'device-' + i} className='label'>{device}</p>
+            }) : <p className='label'>Computer Keyboard</p>}
           {hasMIDISupport ? <button onClick={() => props.setSynthActive(true)}>Play Now!</button> : <p className='landing-support-message'>Your browser is too old school for WebSynth &#58;&#40;</p>}
           
           <p className='label'>A Project by <a href='https://www.treyhardin.com' target="_blank" rel="noreferrer">Trey Hardin</a></p>

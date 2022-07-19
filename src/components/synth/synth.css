@@ -100,6 +100,18 @@
     border: 1px solid var(--color-blue);
     z-index: 0;
     padding-bottom: var(--size-s);
+    cursor: pointer;
+    transition: background-color ease-out .1s;
+}
+
+.keyboard-note:hover,
+.keyboard-note.black-note:hover {
+    background-color: var(--color-yellow);
+}
+
+.keyboard-note.pressed,
+.keyboard-note.black-note.pressed {
+    background-color: var(--color-lightblue);
 }
 
 .keyboard-note.black-note {

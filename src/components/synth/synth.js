@@ -23,8 +23,14 @@ export default function Synth(props) {
     const [ inputStatus, setInputStatus ] = useState(false)
 
     // Input Source State
-    const [ inputType, setInputType ] = useState('midi')
+    const [ inputType, setInputType ] = useState('qwerty')
+    let inputTypeRef = useRef()
+    inputTypeRef.current = inputType
 
+    // On-Screen Keyboard State
+    const [ virtualKeyboard, setVirtualKeyboard ] = useState(null)
+    let virtualKeyboardRef = useRef()
+    virtualKeyboardRef.current = virtualKeyboard
 
     /*-- Synth States --*/
 
@@ -98,42 +104,45 @@ export default function Synth(props) {
     // Initialize Audio Context
     window.AudioContext = window.AudioContext || window.webkitAudioContext
 
-    // Set Synth Defaults
+    
     useEffect(() => {
 
+        // Set Synth Defaults
         setVCOType(effectsSettings.VCOTypeDefault)
         setVCAGain(effectsSettings.VCAGainDefault)
         setLFOType(effectsSettings.LFOTypeDefault)
         setLFOGain(effectsSettings.LFOGainDefault)
-
         setVCFType(effectsSettings.VCFTypeDefault)
         setVCFFrequency(effectsSettings.VCFFrequencyDefault)
         setVCFQ(effectsSettings.VCFQDefault)
         setVCFGain(effectsSettings.VCFGainDefault)
-
         setOutputGain(effectsSettings.outputGainDefault)
         
+        // Create Audio Context
         if(synthActiveRef.current && !audioContext) {
             setAudioContext(new AudioContext())
         }
 
+        // Create Global LFO
         if (audioContextRef.current) {
-
-            // Create LFO
             let newLFO = audioContext.createOscillator()
             newLFO.type = LFOTypeRef.current.toLowerCase()
             newLFO.frequency.value = effectsSettings.LFOFrequencyDefault
             setLFOFrequency(newLFO.frequency.value)
-
             setLFO(newLFO)
             newLFO.start()
         }
-        
-    }, [synthActive, audioContext])
 
-    // const activateSynth = () => {
-    //     setSynthActive(true)
-    // }
+        if (virtualKeyboardRef.current) {
+            console.log('virtual keys')
+            let virtualKeys = virtualKeyboardRef.current.querySelectorAll('.keyboard-note')
+            virtualKeys.forEach((virtualKey) => {
+                virtualKey.addEventListener('mousedown', virtualKeyDownHandler)
+                virtualKey.addEventListener('mouseup', virtualKeyUpHandler)
+            })
+        }
+        
+    }, [synthActive, audioContext, virtualKeyboard])
 
     /*-- Handle Inputs --*/
 
@@ -144,10 +153,6 @@ export default function Synth(props) {
 
         let note = input.data[1]
         let velocity = input.data[2]
-
-        // console.log(synthActiveRef.current)
-
-        // console.log('KeyDown')
 
         // Create VCO (Base Tone Oscillator)
         let VCO = audioContextRef.current.createOscillator()
@@ -355,6 +360,71 @@ export default function Synth(props) {
             return value.frequency.value = originalFrequency + inputValue * pitchBendStrength
         })
     }
+
+    let currentVirtualKey;
+
+    // virtualKeyboardRef.current
+
+    const virtualKeyDownHandler = (e, keyDownData) => {
+
+        // console.log(keyDownData)
+
+        if (inputTypeRef.current === 'qwerty') {
+            
+
+            let virtualKey
+            let virtualKeyNote
+            let virtualKeyLabel
+
+            if (keyDownData) {
+                virtualKeyNote = keyDownData.data[1]
+                virtualKey = document.querySelector(`[data-key-note='${virtualKeyNote}']`)
+            } else {
+                virtualKey = e.target
+                virtualKeyLabel = virtualKey.dataset.keyLabel
+                virtualKeyNote = virtualKey.dataset.keyNote
+            }
+
+            // console.log(virtualKeyNote)
+            currentVirtualKey = virtualKey
+
+            virtualKey.classList.add('pressed')
+            keyDownHandler({data: [144, virtualKeyNote, 0]})
+
+
+        }
+    }
+
+    const virtualKeyUpHandler = (e, keyUpData) => {
+
+        if (inputTypeRef.current === 'qwerty') {
+
+            let virtualKey
+            let virtualKeyNote
+            let virtualKeyLabel
+
+            if (keyUpData) {
+                virtualKeyNote = keyUpData.data[1]
+                virtualKey = document.querySelector(`[data-key-note='${virtualKeyNote}']`)
+            } else {
+                virtualKey = e.target
+                virtualKeyLabel = virtualKey.dataset.keyLabel
+                virtualKeyNote = virtualKey.dataset.keyNote
+            }
+
+            // console.log(keyUpData)
+            keyUpHandler({data: [144, virtualKeyNote, 0]})
+            virtualKey.classList.remove('pressed')
+
+        }
+    }
+
+    const setNewInputType = (type) => {
+        setInputType(type)
+    }
+
+    
+
     
     return (
         <div className='synth-wrapper'>
@@ -363,6 +433,7 @@ export default function Synth(props) {
             synthActive={synthActiveRef.current} 
             setAudioContext={setAudioContext}
             setSynthActive={setSynthActive} 
+            setNewInputType={setNewInputType}
         />
         <Input 
             keyDown={keyDownHandler} 
@@ -373,6 +444,9 @@ export default function Synth(props) {
             aftertouch={aftertouchHandler}
             pitchBend={pitchBendHandler}
             synthActive={synthActiveRef.current}
+            virtualKeyDown={virtualKeyDownHandler}
+            virtualKeyUp={virtualKeyUpHandler}
+            // inputType={inputType}
         />
         <section className='oscillator-wrapper'>
             <SettingsWidget 
@@ -410,24 +484,25 @@ export default function Synth(props) {
             }
 
             {inputType === 'qwerty' ?
-                <div className='keyboard-wrapper'>
-                    <span className='keyboard-note label'>a</span>
-                    <span className='keyboard-note black-note label'>w</span>
-                    <span className='keyboard-note label'>s</span>
-                    <span className='keyboard-note label black-note label'>e</span>
-                    <span className='keyboard-note label'>d</span>
-                    <span className='keyboard-note label'>f</span>
-                    <span className='keyboard-note label black-note label'>t</span>
-                    <span className='keyboard-note label'>g</span>
-                    <span className='keyboard-note label black-note label'>y</span>
-                    <span className='keyboard-note label'>h</span>
-                    <span className='keyboard-note label black-note label'>u</span>
-                    <span className='keyboard-note label'>j</span>
-                    <span className='keyboard-note label'>k</span>
-                    <span className='keyboard-note label black-note label'>o</span>
-                    <span className='keyboard-note label'>l</span>
-                    <span className='keyboard-note label black-note label'>p</span>
-                    <span className='keyboard-note label'>;</span>
+                <div className='keyboard-wrapper' ref={virtualKeyboardRef}>
+                    <span data-key-label='a' data-key-note='48' className='keyboard-note label'>a</span>
+                    <span data-key-label='w' data-key-note='49' className='keyboard-note black-note label'>w</span>
+                    <span data-key-label='s' data-key-note='50' className='keyboard-note label'>s</span>
+                    <span data-key-label='e' data-key-note='51' className='keyboard-note label black-note label'>e</span>
+                    <span data-key-label='d' data-key-note='52' className='keyboard-note label'>d</span>
+                    <span data-key-label='f' data-key-note='53' className='keyboard-note label'>f</span>
+                    <span data-key-label='t' data-key-note='54' className='keyboard-note label black-note label'>t</span>
+                    <span data-key-label='g' data-key-note='55' className='keyboard-note label'>g</span>
+                    <span data-key-label='y' data-key-note='56' className='keyboard-note label black-note label'>y</span>
+                    <span data-key-label='h' data-key-note='57' className='keyboard-note label'>h</span>
+                    <span data-key-label='u' data-key-note='58' className='keyboard-note label black-note label'>u</span>
+                    <span data-key-label='j' data-key-note='59' className='keyboard-note label'>j</span>
+
+                    <span data-key-label='k' data-key-note='60' className='keyboard-note label'>k</span>
+                    <span data-key-label='o' data-key-note='61' className='keyboard-note label black-note label'>o</span>
+                    <span data-key-label='l' data-key-note='62' className='keyboard-note label'>l</span>
+                    <span data-key-label='p' data-key-note='63' className='keyboard-note label black-note label'>p</span>
+                    <span data-key-label=';' data-key-note='64' className='keyboard-note label'>;</span>
                 </div>
                 : null
             }
