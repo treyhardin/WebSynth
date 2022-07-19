@@ -166,8 +166,9 @@ export default function Landing(props) {
           {MIDIDevicesRef.current ? 
             MIDIDevicesRef.current.map((device, i) => {
               return <p key={'device-' + i} className='label'>{device}</p>
-            }) : <p className='label'>Computer Keyboard</p>}
-          {hasMIDISupport ? <button onClick={() => props.setSynthActive(true)}>Play Now!</button> : <p className='landing-support-message'>Your browser is too old school for WebSynth &#58;&#40;</p>}
+            }) : <p className='label'>Computer Keyboard</p>
+          }
+          <button onClick={() => props.setSynthActive(true)}>Play Now!</button>
           
           <p className='label'>A Project by <a href='https://www.treyhardin.com' target="_blank" rel="noreferrer">Trey Hardin</a></p>
           <div className='background-grid'>
