@@ -4,19 +4,14 @@
     right: 0;
     bottom: 0;
     left: 0;
-    /* width: 100%; */
     display: flex;
     flex-direction: column;
     justify-content: stretch;
     align-items: stretch;
-    /* background: rgb(32,27,85); */
-    /* background: radial-gradient(circle, rgba(32,27,85,1) 0%, rgba(2,0,23,1) 100%); */
     background: linear-gradient(135deg, var(--color-orange), var(--color-darkorange));
     border-radius: 20px;
     margin: clamp(10px, var(--size-s), 30px);
-    /* padding: clamp(10px, var(--size-s), 30px); */
     overflow: hidden;
-    /* gap: var(--size-s); */
 }
 
 .settings-wrapper {

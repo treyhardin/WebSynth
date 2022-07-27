@@ -1,5 +1,6 @@
 import { createElement, useEffect, useRef, useState } from 'react'
 import { getNameFromNoteNumber } from '../../helpers/helpers'
+import QWERTYInput from '../input/qwerty-input'
 import './virtual-keyboard.css'
 
 export default function VirtualKeyboard(props) {
@@ -10,20 +11,31 @@ export default function VirtualKeyboard(props) {
     let firstKey = 48
     let keyCount = 47
 
+    if (!props.touchControls) {
+        keyCount = 16
+    }
+
     let keyboardKeys = []
+    let qwertyLabels = ['a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j', 'k', 'o', 'l', 'p', ';' ]
+    let qwertyLabelIndex = 0
 
     for (let i = firstKey; i <= keyCount + firstKey; i++ ) {
+        let keyLabel = qwertyLabels[qwertyLabelIndex]
+        qwertyLabelIndex++
+        // let keyLabel = 'g'
         let keyColor = 'white'
         let noteName = getNameFromNoteNumber(i)
+        let noteNumber = i + (props.octave * 12)
         
         if (noteName == 'C#' || noteName == 'D#' || noteName == 'F#' || noteName == 'G#' || noteName == 'A#') {
             keyColor = 'black'
         }
 
         keyboardKeys.push({
-            note: i,
+            note: noteNumber,
             name: noteName,
-            color: keyColor
+            color: keyColor,
+            label: keyLabel
         })
     }
 
@@ -37,9 +49,7 @@ export default function VirtualKeyboard(props) {
             props.keyDownHandler(keyPressed, 127)
 
             elementPressed.addEventListener('pointerleave', (mouseLeaveEvent) => {
-                // console.log(mouseLeaveEvent)
                 if (isPlaying) props.keyUpHandler(keyPressed, 127)
-                // console.log(mouseLeaveEvent)
                 isPlaying = false
             }, {once: true})
 
@@ -53,77 +63,29 @@ export default function VirtualKeyboard(props) {
 
     let pointerDown = false
 
-    
-
-    // const virtualKeyLeaveHandler = (e) => {
-
-    // }
-
-    // const virtualKeyUpHandler = (e, virtualKey) => {
-    //     console.log(virtualKey)
-    //     // console.log(e.target)
-    //     // console.log(e.srcElement)
-    //     // console.log(e.target === e.srcElement)
-    //     // if (e.target === e.srcElement) {
-    //         let keyPressed = e.target.dataset.keyNote
-    //         props.keyUpHandler(keyPressed, 127)
-    //         console.log(e)
-    //     // }
-        
-    // }
-
-    
-
-    // const virtualKeyboardPointerDownHandler = (e) => {
-    //     pointerDown = true
-
-    //     // console.log('click')
-    //     // console.log(e)
-    // }
-
     const virtualKeyboardPointerUpHandler = (e) => {
         pointerDown = false
     }
 
-    const virtualKeyEnterHandler = (e) => {
-        // console.log(pointerDown)
-        if (pointerDown) {
-            console.log('move worked')
-        }
-    }
-
     useEffect(() => {
-
-        // virtualKeyboard.current.addEventListener('pointerdown', virtualKeyboardPointerDownHandler)
-        // virtualKeyboard.current.addEventListener('pointerdown', virtualKeyboardPointerUpHandler)
 
         // Add Key Interactions
         let virtualKeys = virtualKeyboard.current.querySelectorAll('.keyboard-note')
         virtualKeys.forEach((virtualKey) => {
 
-            // Add Touch Events
-            // if (props.touchControls) {
-            //     virtualKey.addEventListener('touchstart', virtualKeyDownHandler(virtualKey))
-            //     // virtualKey.addEventListener('touchend', virtualKeyUpHandler(virtualKey))
-            //     return
-            // }
-
-            // Add Mouse Events
-            // virtualKey.addEventListener('pointerenter', virtualKeyEnterHandler)
-            // virtualKeyboard.current.addEventListener('pointerdown', virtualKeyboardPointerHandler)
+            // Add Pointer Events
             virtualKey.addEventListener('pointerdown', virtualKeyDownHandler)
-            // virtualKey.addEventListener('mouseup', virtualKeyUpHandler)
-            // virtualKey.addEventListener('dragenter', dragEnterHandler)
-            // virtualKey.addEventListener('dragleave', dragLeaveHandler)
         })
 
-    }, [virtualKeyboard])
+    }, [virtualKeyboard, props.octave])
 
     return (
-        <section className={`virtual-keyboard ${props.touchControls ? 'touch-enabled' : null}`} ref={virtualKeyboard}>
-            {keyboardKeys.map((key) => {
-                return <span key={key.note} data-key-note={key.note} className={`keyboard-note label ${key.color}-key`}><p className='key-label'>{key.name}</p></span>
-            })}
-        </section>
+        <>
+            <section className={`virtual-keyboard ${props.touchControls && props.inputType === 'virtualKeyboard' ? 'touch-enabled' : null}`} ref={virtualKeyboard}>
+                {keyboardKeys.map((key) => {
+                    return <span key={key.note} data-key-note={key.note} className={`keyboard-note label ${key.color}-key`}><p className='key-label'>{key.label}</p></span>
+                })}
+            </section>
+        </>
     )
 }

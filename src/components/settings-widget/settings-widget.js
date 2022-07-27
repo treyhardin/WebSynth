@@ -78,7 +78,7 @@ export default function SettingsWidget(props) {
 
           </div>
 
-        {props.info ? 
+        {props.settings ? 
           <div className="setting-sliders">
             {Object.entries(props.settings).map (([key, value]) => {
               return (
@@ -93,16 +93,8 @@ export default function SettingsWidget(props) {
               )
             })
             }
-            {/* {Object.entries(props.info).map (([key, value]) => {
-              return (
-                  <Slider label={key} key={key} value={Math.round((value + Number.EPSILON) * 100) / 100} />
-              )
-            })
-            } */}
           </div>
           : null }
-
-          {/* <Slider /> */}
           
         </div>
     )
