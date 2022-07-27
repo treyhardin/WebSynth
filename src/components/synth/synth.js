@@ -10,7 +10,6 @@ import MIDIInput from '../input/midi-input'
 import QWERTYInput from '../input/qwerty-input'
 import VirtualKeyboard from '../virtual-keyboard/virtual-keyboard'
 
-
 export default function Synth(props) {
 
     // Synth Active State
