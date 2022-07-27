@@ -1,12 +1,55 @@
-.virtual-keyboard {
-    width: 100%;
-    position: relative;
+/* .notes-wrapper {
     display: flex;
     flex-direction: row;
     justify-content: stretch;
     align-items: stretch;
-    flex-grow: 1;
+    justify-self: stretch;
+    align-self: stretch;
+    border-radius: 0 0 8px 8px;
+    flex: 1 1 100%;
+    overflow: hidden;
+    border-top: 3px solid var(--color-blue);
+    /* border-right: 1px solid var(--color-blue);
+    border-bottom: 1px solid var(--color-blue);
+    border-left: 1px solid var(--color-blue);
+} */
+
+.virtual-keyboard {
+    width: 100%;
+    position: relative;
     overflow-x: scroll;
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    align-items: stretch;
+    justify-self: stretch;
+    align-self: stretch;
+    border-radius: 0 0 8px 8px;
+    flex: 0 1 40%;
+    border-top: 3px solid var(--color-darkblue);
+    filter: var(--shadow-l);
+    padding-left: clamp(10px, var(--size-s), 30px);
+    padding-right: clamp(10px, var(--size-s), 30px);
+    padding-bottom: clamp(10px, var(--size-s), 30px);
+    /* box-shadow: inset 3px 3px 5px var(--color-darkblue); */
+}
+
+/* Raspberry PI Breakpoint */
+@media screen and (max-width: 480px) and (max-height: 320px) {
+    .virtual-keyboard {
+        display: none;
+    }
+}
+
+.virtual-keyboard::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 15%;
+    background: linear-gradient(180deg, var(--color-shadow), rgba(0, 0, 0, 0));
+    z-index: 3;
 }
 
 .virtual-keyboard.touch-enabled {
@@ -18,13 +61,17 @@
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
-    flex-basis: clamp(40px, 10%, 80px);
+    /* flex-basis: 80px; */
+    flex-basis: clamp(60px, 8vw, 100px);
+    /* flex-basis: clamp(40px, 10%, 80px); */
     flex-shrink: 0;
     flex-grow: 0;
     height: 100%;
-    background-color: var(--color-reverse);
+    /* background: linear-gradient(90deg, var(--color-yellow), #dcd866); */
+    background: linear-gradient(90deg, var(--color-reverse), var(--color-offwhite));
     color: var(--color-ink);
-    border: 1px solid var(--color-blue);
+    /* border: 1px solid var(--color-blue); */
+    border-radius: 0 0 8px 8px;
     z-index: 0;
     padding-bottom: var(--size-s);
     cursor: pointer;
@@ -42,22 +89,27 @@
 }
 
 .keyboard-note.black-key {
+    /* --black-key-width: 60px; */
+    --black-key-width: clamp(40px, 5vw, 60px);
     z-index: 1;
-    width: 6%;
-    margin: 0 -3% 0 -3%;
+    /* width: 6%; */
+    margin: 0 calc(var(--black-key-width) / 2 * -1);
+    /* width: 0; */
+    flex-basis: var(--black-key-width);
+    /* margin-left: ; */
     height: 60%;
-    background-color: var(--color-ink);
+    background: linear-gradient(90deg, var(--color-subdued), var(--color-darkblue));
     color: var(--color-reverse);
-    border-radius: 0px 0px 1vw 1vw;
+    border: none;
+    border-radius: 0px 0px 8px 8px;
+    filter: var(--shadow-l);
+}
+
+.virtual-keyboard .key-label {
+    pointer-events: none;
 }
 
 .virtual-keyboard.touch-enabled .key-label {
     display: none;
 }
 
-.virtual-keyboard .key-label {
-    -webkit-user-select: none; /* Safari */        
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE10+/Edge */
-    user-select: none; /* Standard */
-}

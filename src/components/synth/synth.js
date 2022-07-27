@@ -137,14 +137,6 @@ export default function Synth(props) {
             setLFO(newLFO)
             newLFO.start()
         }
-
-        if (virtualKeyboardRef.current) {
-            let virtualKeys = virtualKeyboardRef.current.querySelectorAll('.keyboard-note')
-            virtualKeys.forEach((virtualKey) => {
-                virtualKey.addEventListener('mousedown', virtualKeyDownHandler)
-                virtualKey.addEventListener('mouseup', virtualKeyUpHandler)
-            })
-        }
         
     }, [synthActive, audioContext, virtualKeyboard])
 
@@ -173,7 +165,11 @@ export default function Synth(props) {
         LFORef.current.LFOGain = LFOGain
 
         // Add LFO to Object
+        
         LFORef.current.LFOGain.gain.value = LFOGainRef.current
+        LFORef.current.frequency.value = LFOFrequencyRef.current
+        console.log(LFORef.current.frequency)
+        console.log(LFOFrequencyRef.current)
         LFORef.current.type = LFOTypeRef.current.toLowerCase()
         VCO.LFO = LFORef.current
 
@@ -329,71 +325,18 @@ export default function Synth(props) {
     }
 
     
-
-    let currentVirtualKey;
-
-    // virtualKeyboardRef.current
-
-    const virtualKeyDownHandler = (e, keyDownData) => {
-
-        // console.log(keyDownData)
-
-        if (inputTypeRef.current === 'qwerty') {
-            
-
-            let virtualKey
-            let virtualKeyNote
-            let virtualKeyLabel
-
-            if (keyDownData) {
-                virtualKeyNote = keyDownData.data[1]
-                virtualKey = document.querySelector(`[data-key-note='${virtualKeyNote}']`)
-            } else {
-                virtualKey = e.target
-                virtualKeyLabel = virtualKey.dataset.keyLabel
-                virtualKeyNote = virtualKey.dataset.keyNote
-            }
-
-            // console.log(virtualKeyNote)
-            currentVirtualKey = virtualKey
-
-            virtualKey.classList.add('pressed')
-            keyDownHandler({data: [144, virtualKeyNote, 0]})
-
-
-        }
-    }
-
-    const virtualKeyUpHandler = (e, keyUpData) => {
-
-        if (inputTypeRef.current === 'qwerty') {
-
-            let virtualKey
-            let virtualKeyNote
-            let virtualKeyLabel
-
-            if (keyUpData) {
-                virtualKeyNote = keyUpData.data[1]
-                virtualKey = document.querySelector(`[data-key-note='${virtualKeyNote}']`)
-            } else {
-                virtualKey = e.target
-                virtualKeyLabel = virtualKey.dataset.keyLabel
-                virtualKeyNote = virtualKey.dataset.keyNote
-            }
-
-            // console.log(keyUpData)
-            keyUpHandler({data: [144, virtualKeyNote, 0]})
-            virtualKey.classList.remove('pressed')
-
-        }
-    }
-
-    
-
-    
-
-    
     return (
+
+        <>
+
+            <Landing 
+                // activateSynth={activateSynth} 
+                synthActive={synthActiveRef.current} 
+                setAudioContext={setAudioContext}
+                setSynthActive={setSynthActive} 
+                setNewInputType={setNewInputType}
+                inputType={inputTypeRef.current}
+            />
         
         <div className='synth-wrapper'>
             <DetectInput 
@@ -425,14 +368,6 @@ export default function Synth(props) {
                 synthActive={synthActive}
                 inputType={inputType}
             />
-            <Landing 
-                // activateSynth={activateSynth} 
-                synthActive={synthActiveRef.current} 
-                setAudioContext={setAudioContext}
-                setSynthActive={setSynthActive} 
-                setNewInputType={setNewInputType}
-                inputType={inputTypeRef.current}
-            />
             {/* <Input 
                 keyDown={keyDownHandler} 
                 keyUp={keyUpHandler}
@@ -446,26 +381,112 @@ export default function Synth(props) {
                 virtualKeyUp={virtualKeyUpHandler}
                 // inputType={inputType}
             /> */}
-            <section className='oscillator-wrapper'>
-                <SettingsWidget 
-                    label="VCO" 
-                    waveType={VCOTypeRef.current}
-                    icon={true}
-                    info={{'gain': VCAGainRef.current}}
-                    // gain={vcaGainRef.current}
-                />
-                <SettingsWidget 
-                    label="LFO" 
-                    waveType={LFOTypeRef.current}
-                    icon={true}
-                    info={{
-                        'freq': LFOFrequencyRef.current,
-                        'gain': LFOGainRef.current
-                    }}
-                    // gain={vcaGainRef.current}
-                />
+            <section className='settings-wrapper'>
+            
+            {/* <SettingsWidget 
+                label="VCO" 
+                waveType={VCOTypeRef.current}
+                icon={true}
+                info={{
+                    // 'Master': outputGainRef.current,
+                    'gain': VCAGainRef.current
+                }}
+                // gain={vcaGainRef.current}
+            /> */}
+
+            <SettingsWidget 
+                // label="Master" 
+                icon={false}
+                info={{'Master': outputGainRef.current}}
+                settings={{
+                    'Master': {
+                        'state': outputGainRef.current,
+                        'min': effectsSettings.outputGainMin,
+                        'max': effectsSettings.outputGainMax,
+                        'setter': setOutputGain
+                    }
+                }}
+                notes={activeNotes}
+            />
+
+            <SettingsWidget 
+                label="LFO" 
+                VCOWaveType={VCOTypeRef.current}
+                setVCOType={setVCOType}
+                LFOWaveType={LFOTypeRef.current}
+                setLFOType={setLFOType}
+                setLFOFrequency={setLFOFrequency}
+                // waveType={LFOTypeRef.current}
+                // icon={true}
+                info={{
+                    'VCO': VCAGainRef.current,
+                    'LFO': LFOGainRef.current,
+                    'freq': LFOFrequencyRef.current
+                }}
+                settings={{
+                    'VCO': {
+                        'state': VCAGainRef.current,
+                        'min': effectsSettings.VCAGainMin,
+                        'max': effectsSettings.VCAGainMax,
+                        'setter': setVCAGain
+                    },
+                    'LFO': {
+                        'state': LFOGainRef.current,
+                        'min': effectsSettings.LFOGainMin,
+                        'max': effectsSettings.LFOGainMax,
+                        'setter': setLFOGain
+                    },
+                    'freq': {
+                        'state': LFOFrequencyRef.current,
+                        'min': effectsSettings.LFOFrequencyMin,
+                        'max': effectsSettings.LFOFrequencyMax,
+                        'setter': setLFOFrequency
+                    }
+                }}
+                // gain={vcaGainRef.current}
+            />
+
+            {/* <span className='text-setting'>
+                <p>{VCFTypeRef.current}</p>
+            </span> */}
+        
+            <SettingsWidget 
+                VCFType={VCFTypeRef.current}
+                setVCFType={setVCFType}
+                label="Filter"
+                // waveType={LFOTypeRef.current}
+                // icon={false}
+                info={{
+                    'freq': VCFFrequencyRef.current,
+                    'Q': VCFQRef.current,
+                    'Gain': VCFGainRef.current
+                }}
+                settings={{
+                    'Freq': {
+                        'state': VCFFrequencyRef.current,
+                        'min': effectsSettings.VCFFrequencyMin,
+                        'max': effectsSettings.VCFFrequencyMax,
+                        'setter': setVCFFrequency
+                    },
+                    'Q': {
+                        'state': VCFQRef.current,
+                        'min': effectsSettings.VCFQMin,
+                        'max': effectsSettings.VCFQMax,
+                        'setter': setVCFQ
+                    },
+                    'Gain': {
+                        'state': VCFGainRef.current,
+                        'min': effectsSettings.VCFGainMin,
+                        'max': effectsSettings.VCFGainMax,
+                        'setter': setVCFGain
+                    }
+                }}
+                // gain={vcaGainRef.current}
+            />
+
+            
+            
         </section>
-        <section className='notes-wrapper'>
 
             <VirtualKeyboard 
                 synthActive={synthActive}
@@ -474,7 +495,7 @@ export default function Synth(props) {
                 keyUpHandler={keyUpHandler}
             />
         
-            {inputType === 'midi' ?
+            {/* {inputType === 'midi' ?
                 Object.entries(activeNotes).length <= 0 ? 
                     <p className='note-card note-placeholder'>🎹</p> :
                     Object.entries(activeNotes).map(([key, value]) => {
@@ -486,55 +507,10 @@ export default function Synth(props) {
                             </div>
                         )
                     }) : null
-            }
-
-            {/* {inputType === 'qwerty' ?
-                <div className='keyboard-wrapper' ref={virtualKeyboardRef}>
-                    <span data-key-label='a' data-key-note='48' className='keyboard-note label'>a</span>
-                    <span data-key-label='w' data-key-note='49' className='keyboard-note black-note label'>w</span>
-                    <span data-key-label='s' data-key-note='50' className='keyboard-note label'>s</span>
-                    <span data-key-label='e' data-key-note='51' className='keyboard-note label black-note label'>e</span>
-                    <span data-key-label='d' data-key-note='52' className='keyboard-note label'>d</span>
-                    <span data-key-label='f' data-key-note='53' className='keyboard-note label'>f</span>
-                    <span data-key-label='t' data-key-note='54' className='keyboard-note label black-note label'>t</span>
-                    <span data-key-label='g' data-key-note='55' className='keyboard-note label'>g</span>
-                    <span data-key-label='y' data-key-note='56' className='keyboard-note label black-note label'>y</span>
-                    <span data-key-label='h' data-key-note='57' className='keyboard-note label'>h</span>
-                    <span data-key-label='u' data-key-note='58' className='keyboard-note label black-note label'>u</span>
-                    <span data-key-label='j' data-key-note='59' className='keyboard-note label'>j</span>
-
-                    <span data-key-label='k' data-key-note='60' className='keyboard-note label'>k</span>
-                    <span data-key-label='o' data-key-note='61' className='keyboard-note label black-note label'>o</span>
-                    <span data-key-label='l' data-key-note='62' className='keyboard-note label'>l</span>
-                    <span data-key-label='p' data-key-note='63' className='keyboard-note label black-note label'>p</span>
-                    <span data-key-label=';' data-key-note='64' className='keyboard-note label'>;</span>
-                </div>
-                : null
             } */}
-
-
-            
-        </section>
-        <section className='LFO-wrapper'>
-            <span className='text-setting'>
-                <p>{VCFTypeRef.current}</p>
-            </span>
-            
-            <SettingsWidget 
-                // label={VCFTypeRef.current}
-                waveType={LFOTypeRef.current}
-                icon={false}
-                info={{
-                    // 'type': VCFTypeRef.current,
-                    'freq': VCFFrequencyRef.current,
-                    'Q': VCFQRef.current,
-                    'Gain': VCFGainRef.current,
-                    'Master': outputGainRef.current
-                }}
-                // gain={vcaGainRef.current}
-            />
-        </section>
         
         </div>
+
+        </>
     )
 }

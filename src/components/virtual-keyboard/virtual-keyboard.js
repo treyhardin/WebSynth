@@ -8,7 +8,7 @@ export default function VirtualKeyboard(props) {
 
     // Create Keys
     let firstKey = 48
-    let keyCount = 32
+    let keyCount = 47
 
     let keyboardKeys = []
 
@@ -29,23 +29,35 @@ export default function VirtualKeyboard(props) {
 
     const virtualKeyDownHandler = (e) => {
         let isPlaying = true
-        console.log('mousedown')
         let elementPressed = e.target
         let keyPressed = e.target.dataset.keyNote
-        // console.log(props)
-        props.keyDownHandler(keyPressed, 127)
 
-        elementPressed.addEventListener('mouseleave', (mouseLeaveEvent) => {
-            if (isPlaying) props.keyUpHandler(keyPressed, 127)
-            isPlaying = false
-        }, {once: true})
+        if (keyPressed) {
+        
+            props.keyDownHandler(keyPressed, 127)
 
-        elementPressed.addEventListener('mouseup', () => {
-            // console.log('mouseup')
-            if (isPlaying) props.keyUpHandler(keyPressed, 127)
-            isPlaying = false
-        }, {once: true})
+            elementPressed.addEventListener('pointerleave', (mouseLeaveEvent) => {
+                // console.log(mouseLeaveEvent)
+                if (isPlaying) props.keyUpHandler(keyPressed, 127)
+                // console.log(mouseLeaveEvent)
+                isPlaying = false
+            }, {once: true})
+
+            elementPressed.addEventListener('pointerup', () => {
+                if (isPlaying) props.keyUpHandler(keyPressed, 127)
+                isPlaying = false
+            }, {once: true})
+
+        }
     }
+
+    let pointerDown = false
+
+    
+
+    // const virtualKeyLeaveHandler = (e) => {
+
+    // }
 
     // const virtualKeyUpHandler = (e, virtualKey) => {
     //     console.log(virtualKey)
@@ -60,32 +72,49 @@ export default function VirtualKeyboard(props) {
         
     // }
 
-    const dragEnterHandler = (e) => {
-        console.log(e)
+    
+
+    // const virtualKeyboardPointerDownHandler = (e) => {
+    //     pointerDown = true
+
+    //     // console.log('click')
+    //     // console.log(e)
+    // }
+
+    const virtualKeyboardPointerUpHandler = (e) => {
+        pointerDown = false
     }
 
-    const dragLeaveHandler = (e) => {
-        // console.log(e)
+    const virtualKeyEnterHandler = (e) => {
+        // console.log(pointerDown)
+        if (pointerDown) {
+            console.log('move worked')
+        }
     }
 
     useEffect(() => {
+
+        // virtualKeyboard.current.addEventListener('pointerdown', virtualKeyboardPointerDownHandler)
+        // virtualKeyboard.current.addEventListener('pointerdown', virtualKeyboardPointerUpHandler)
 
         // Add Key Interactions
         let virtualKeys = virtualKeyboard.current.querySelectorAll('.keyboard-note')
         virtualKeys.forEach((virtualKey) => {
 
             // Add Touch Events
-            if (props.touchControls) {
-                virtualKey.addEventListener('touchstart', virtualKeyDownHandler(virtualKey))
-                // virtualKey.addEventListener('touchend', virtualKeyUpHandler(virtualKey))
-                return
-            }
+            // if (props.touchControls) {
+            //     virtualKey.addEventListener('touchstart', virtualKeyDownHandler(virtualKey))
+            //     // virtualKey.addEventListener('touchend', virtualKeyUpHandler(virtualKey))
+            //     return
+            // }
 
             // Add Mouse Events
-            virtualKey.addEventListener('mousedown', virtualKeyDownHandler)
+            // virtualKey.addEventListener('pointerenter', virtualKeyEnterHandler)
+            // virtualKeyboard.current.addEventListener('pointerdown', virtualKeyboardPointerHandler)
+            virtualKey.addEventListener('pointerdown', virtualKeyDownHandler)
             // virtualKey.addEventListener('mouseup', virtualKeyUpHandler)
-            virtualKey.addEventListener('dragenter', dragEnterHandler)
-            virtualKey.addEventListener('dragleave', dragLeaveHandler)
+            // virtualKey.addEventListener('dragenter', dragEnterHandler)
+            // virtualKey.addEventListener('dragleave', dragLeaveHandler)
         })
 
     }, [virtualKeyboard])

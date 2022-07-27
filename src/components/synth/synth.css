@@ -1,78 +1,38 @@
 .synth-wrapper {
-    position: relative;
-    width: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    /* width: 100%; */
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: stretch;
     align-items: stretch;
-    background: rgb(32,27,85);
-    background: radial-gradient(circle, rgba(32,27,85,1) 0%, rgba(2,0,23,1) 100%);
-    padding: clamp(10px, var(--size-s), 30px);
-    gap: var(--size-s);
-
+    /* background: rgb(32,27,85); */
+    /* background: radial-gradient(circle, rgba(32,27,85,1) 0%, rgba(2,0,23,1) 100%); */
+    background: linear-gradient(135deg, var(--color-orange), var(--color-darkorange));
+    border-radius: 20px;
+    margin: clamp(10px, var(--size-s), 30px);
+    /* padding: clamp(10px, var(--size-s), 30px); */
+    overflow: hidden;
+    /* gap: var(--size-s); */
 }
 
-.oscillator-wrapper,
-.LFO-wrapper {
+.settings-wrapper {
     display: flex;
     flex-direction: row;
     justify-content: stretch;
     align-items: stretch;
-    /* padding: var(--size-s); */
-    border: 1px solid var(--color-blue);
-    border-radius: var(--size-s);
-    overflow: hidden;
-    color: var(--color-reverse);
-    flex-shrink: 0;
-    /* flex: 1 1 25%; */
-}
-
-/* @media screen and (max-width:800px) {
-    .oscillator-wrapper,
-    .LFO-wrapper {
-        flex-direction: row;
-    }
-} */
-
-.notes-wrapper {
-    display: flex;
-    flex-direction: row;
-    justify-content: stretch;
-    align-items: stretch;
-    justify-self: stretch;
-    align-self: stretch;
-    border-radius: var(--size-s);
-    flex: 1 1 100%;
-    overflow: hidden;
-    border: 1px solid var(--color-blue);
-}
-
-.note-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    flex: 1 1 100%;
-    align-self: stretch;
-    color: var(--color-reverse);
-}
-
-.note-card .note-name {
     flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 0;
-    mix-blend-mode: difference;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: clamp(10px, var(--size-s), 30px);
 }
 
-.note-card .note-octave {
-    flex-grow: 0;
-    padding: var(--size-s);
-    mix-blend-mode: difference;
-}
-
-.note-card.note-placeholder {
-    color: var(--color-lightblue);
-    font-size: 12vw;
+@media screen and (max-width: 480px) and (max-height: 320px) {
+    .settings-wrapper {
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
 }
