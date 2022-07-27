@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import './App.css';
 import Synth from './components/synth/synth';
 
@@ -5,20 +6,25 @@ import Synth from './components/synth/synth';
 
 function App() {
 
-  /**
-   * Update CSS vh unit to match *actual* viewport height even in Safari. See
-   * https://css-tricks.com/the-trick-to-viewport-units-on-mobile/ for more info.
-   */
-  const setVh = () => {
-    const vh = window.innerHeight * 0.01
-    document.documentElement.style.setProperty("--vh", `${vh}px`)
-  }
+  useEffect(() => {
 
-  setVh()
+    // Disable iOS Highlighting
+    // document.addEventListener('touchstart', function(e) { e.preventDefault(); });
 
-  window.addEventListener('resize', () => {
-    setVh()
-  })
+
+    // Disable Pinch Zoom
+    const disablePinchZoom = (e) => {
+      if (e.touches.length > 1) {
+        e.preventDefault()
+      }
+    }
+    document.addEventListener("touchmove", disablePinchZoom, { passive: false })
+    return () => {
+      document.removeEventListener("touchmove", disablePinchZoom)
+    }
+    
+
+  },[])
   
   return (
     <div className="App">
