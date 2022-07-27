@@ -6,7 +6,7 @@ export const normalize = (input, maxInput, minOutput, maxOutput) => {
 // Convert MIDI Note to Frequency
 export const midiNoteToFrequency = (number) => {
     const a = 440;
-    return (a / 32) * (2 ** ((number - 9) / 12))
+    return Math.round((a / 32) * (2 ** ((number - 9) / 12)))
 }
 
 // Get Note Name

@@ -55,8 +55,12 @@ export const midiMapping = {
 // Effect Controls
 export const effectsSettings = {
 
+    // Oscillator Wave Types
+    oscillatorWaveTypes: ['Sine', 'Sawtooth', 'Triangle', 'Square'], // Defined by WebMIDI API
+    filterTypes: ['Lowpass', 'Highpass', 'Bandpass', 'Lowshelf', 'Highshelf', 'Peaking', 'Notch', 'Allpass'],
+
     // VCO 
-    VCOTypeDefault: 'Sine', // Sine, Sawtooth, Triangle, Square
+    VCOTypeDefault: 'Sine', // From oscillatorWaveTypes options
 
     // VCA
     VCAGainDefault: 0.03,
@@ -64,7 +68,7 @@ export const effectsSettings = {
     VCAGainMax: 0.1,
 
     //LFO 
-    LFOTypeDefault: 'Sine', // (Sine, Sawtooth, Triangle, Square)
+    LFOTypeDefault: 'Sine', // From oscillatorWaveTypes options
     LFOFrequencyDefault: 1, // Range: 0 - 22050
     LFOFrequencyMin: 0,
     LFOFrequencyMax: 10,

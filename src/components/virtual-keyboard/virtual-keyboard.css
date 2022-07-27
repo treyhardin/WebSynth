@@ -1,0 +1,63 @@
+.virtual-keyboard {
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    align-items: stretch;
+    flex-grow: 1;
+    overflow-x: scroll;
+}
+
+.virtual-keyboard.touch-enabled {
+    /* opacity: 0.5; */
+}
+
+.keyboard-note {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    flex-basis: clamp(40px, 10%, 80px);
+    flex-shrink: 0;
+    flex-grow: 0;
+    height: 100%;
+    background-color: var(--color-reverse);
+    color: var(--color-ink);
+    border: 1px solid var(--color-blue);
+    z-index: 0;
+    padding-bottom: var(--size-s);
+    cursor: pointer;
+    transition: background-color ease-out .1s;
+}
+
+.keyboard-note:hover,
+.keyboard-note.black-key:hover {
+    background-color: var(--color-yellow);
+}
+
+.keyboard-note.pressed,
+.keyboard-note.black-key.pressed {
+    background-color: var(--color-lightblue);
+}
+
+.keyboard-note.black-key {
+    z-index: 1;
+    width: 6%;
+    margin: 0 -3% 0 -3%;
+    height: 60%;
+    background-color: var(--color-ink);
+    color: var(--color-reverse);
+    border-radius: 0px 0px 1vw 1vw;
+}
+
+.virtual-keyboard.touch-enabled .key-label {
+    display: none;
+}
+
+.virtual-keyboard .key-label {
+    -webkit-user-select: none; /* Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}

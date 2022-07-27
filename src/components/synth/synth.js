@@ -5,6 +5,10 @@ import Input from '../input/input'
 import Landing from '../landing/landing'
 import './synth.css'
 import SettingsWidget from '../settings-widget/settings-widget'
+import DetectInput from '../input/detect-input'
+import MIDIInput from '../input/midi-input'
+import QWERTYInput from '../input/qwerty-input'
+import VirtualKeyboard from '../virtual-keyboard/virtual-keyboard'
 
 
 export default function Synth(props) {
@@ -22,10 +26,17 @@ export default function Synth(props) {
     // Hacky State to Force Rerender on Input Change
     const [ inputStatus, setInputStatus ] = useState(false)
 
-    // Input Source State
-    const [ inputType, setInputType ] = useState('qwerty')
+    // Input Type State
+    const [ inputType, setInputType ] = useState(null)
     let inputTypeRef = useRef()
     inputTypeRef.current = inputType
+
+    // Touch Controls State
+    const [ touchControls, setTouchControls ] = useState(false)
+
+    const setNewInputType = (type) => {
+        setInputType(type)
+    }
 
     // On-Screen Keyboard State
     const [ virtualKeyboard, setVirtualKeyboard ] = useState(null)
@@ -33,9 +44,6 @@ export default function Synth(props) {
     virtualKeyboardRef.current = virtualKeyboard
 
     /*-- Synth States --*/
-
-    // All API Supported Waveshapes
-    let waveTypes = ['Sine', 'Sawtooth', 'Square', 'Triangle']
 
     // Active Notes State
     const [ activeNotes, setActiveNotes ] = useState({})
@@ -69,9 +77,6 @@ export default function Synth(props) {
     const [ LFOGain, setLFOGain ] = useState(null)
     const LFOGainRef = useRef()
     LFOGainRef.current = LFOGain
-
-    // Available VCF Types - Enable More if You Want
-    let VCFTypes = ['Lowpass', 'Highpass'] // 'Bandpass', 'Lowshelf', 'Highshelf', 'Peaking', 'Notch', 'Allpass'
 
     // VCF Type State
     const [ VCFType, setVCFType ] = useState(null)
@@ -134,7 +139,6 @@ export default function Synth(props) {
         }
 
         if (virtualKeyboardRef.current) {
-            console.log('virtual keys')
             let virtualKeys = virtualKeyboardRef.current.querySelectorAll('.keyboard-note')
             virtualKeys.forEach((virtualKey) => {
                 virtualKey.addEventListener('mousedown', virtualKeyDownHandler)
@@ -146,13 +150,10 @@ export default function Synth(props) {
 
     /*-- Handle Inputs --*/
 
-    const keyDownHandler = (input) => {
+    const keyDownHandler = (note, velocity) => {
 
         // Console.log the input here and look for the 2nd item in the array to find your controller's input values
         // console.log(input)
-
-        let note = input.data[1]
-        let velocity = input.data[2]
 
         // Create VCO (Base Tone Oscillator)
         let VCO = audioContextRef.current.createOscillator()
@@ -208,20 +209,17 @@ export default function Synth(props) {
 
     }
 
-    const keyUpHandler = (input) => {
+    const keyUpHandler = (note, velocity) => {
 
-        // console.log(activeNotes)
-
-        let note = input.data[1]
         const currentOscillator = activeNotes[note]
 
         // Fade Out VCA Gain
         let fadeOut = 0.03;
-
         const currentOutputGain = currentOscillator.output
         currentOutputGain.gain.setValueAtTime(currentOutputGain.gain.value, audioContextRef.current.currentTime)
         currentOutputGain.gain.exponentialRampToValueAtTime(0.00001, audioContextRef.current.currentTime + fadeOut)
 
+        // Stop Oscillator
         setTimeout(() => {
             currentOscillator.stop()
             currentOscillator.disconnect()
@@ -237,105 +235,85 @@ export default function Synth(props) {
 
     }
 
-    const rangeHandler = (input) => {
+    const VCOTypeInputHandler = (vcoType) => {
+        setVCOType(vcoType)
+        Object.entries(activeNotes).map(([key, value]) => {
+            return value['type'] = vcoType.toLowerCase()
+        })
+    }
 
-        // Console.log the input here and look for the 2nd item in the array to find your controller's input values
-        // console.log(input)
+    const VCAGainInputHandler = (vcaGain) => {
+        setVCAGain(vcaGain)
+        Object.entries(activeNotes).map(([key, value]) => {
+            return value['VCA']['gain']['value'] = vcaGain
+        })
+    }
 
-        let inputNumber = input.data[1]
-        let inputValue = input.data[2]
+    const LFOTypeInputHandler = (lfoType) => {
+        setLFOType(lfoType)
+        Object.entries(activeNotes).map(([key, value]) => {
+            return value['LFO']['type'] = lfoType.toLowerCase()
+        })
+    }
 
-        let waveToggleStepSize = 127 / (waveTypes.length - 1)
-        let VCFToggleStepSize = 127 / (VCFTypes.length - 1)
+    const LFOFrequencyInputHandler = (frequency) => {
+        setLFOFrequency(frequency)
+        Object.entries(activeNotes).map(([key, value]) => {
+            return value['LFO']['frequency']['value'] = frequency
+        })
+    }
 
-        switch (inputNumber) {
+    const LFOGainInputHandler = (lfoGain) => {
+        setLFOGain(lfoGain)
+        Object.entries(activeNotes).map(([key, value]) => {
+            return value['LFO']['LFOGain']['gain']['value'] = lfoGain
+        })
+    }
 
-            case midiMapping.VCOTypeInput:
-                let VCOWaveTypeIndex = Math.round(inputValue / waveToggleStepSize)
-                setVCOType(waveTypes[VCOWaveTypeIndex])
-                Object.entries(activeNotes).map(([key, value]) => {
-                    return value['type'] = waveTypes[VCOWaveTypeIndex].toLowerCase()
-                })
-                break
+    const VCFTypeInputHandler = (vcfType) => {
+        setVCFType(vcfType)
+        Object.entries(activeNotes).map(([key, value]) => {
+            return value['VCF']['type'] = vcfType.toLowerCase()
+        })
+    }
 
-            case midiMapping.VCAGainInput:
-                let normalizedVCAGain = normalize(inputValue, 127, effectsSettings.VCAGainMin, effectsSettings.VCAGainMax)
-                setVCAGain(normalizedVCAGain)
-                Object.entries(activeNotes).map(([key, value]) => {
-                    return value['VCA']['gain']['value'] = normalizedVCAGain
-                })
-                break
+    const VCFQInputHandler = (vcfQ) => {
+        setVCFQ(vcfQ)
+        Object.entries(activeNotes).map(([key, value]) => {
+            return value['VCF']['q'] = vcfQ
+        })
+    }
 
-            case midiMapping.LFOWaveTypeInput:
-                let LFOWaveTypeIndex = Math.floor(inputValue / waveToggleStepSize)
-                setLFOType(waveTypes[LFOWaveTypeIndex])
+    const VCFFrequencyInputHandler = (frequency) => {
+        setVCFFrequency(frequency)
+        Object.entries(activeNotes).map(([key, value]) => {
+            return value['VCF']['frequency']['value'] = frequency
+        })
+    }
 
-                Object.entries(activeNotes).map(([key, value]) => {
-                    return value['LFO']['type'] = waveTypes[LFOWaveTypeIndex].toLowerCase()
-                })
-                break
+    const VCFGainInputHandler = (vcfGain) => {
+        setVCFGain(vcfGain)
+        Object.entries(activeNotes).map(([key, value]) => {
+            return value['VCF']['gain']['value'] = vcfGain
+        })
+    }
 
-            case midiMapping.LFOFrequencyInput:
-                let normalizedLFOFrequency = normalize(inputValue, 127, effectsSettings.LFOFrequencyMin, effectsSettings.LFOFrequencyMax)
-                setLFOFrequency(normalizedLFOFrequency)
+    const outputGainInputHandler = (outputGain) => {
+        setOutputGain(outputGain)
+        Object.entries(activeNotes).map(([key, value]) => {
+            return value['output']['gain']['value'] = outputGain
+        })
+    }
 
-                Object.entries(activeNotes).map(([key, value]) => {
-                    return value['LFO']['frequency']['value'] = normalizedLFOFrequency
-                })
-                break
+    const pitchBendHandler = (note, velocity) => {
 
-            case midiMapping.LFOGainInput:
-                let normalizedLFOGain = normalize(inputValue, 127, effectsSettings.LFOGainMin, effectsSettings.LFOGainMax)
-                setLFOGain(normalizedLFOGain)
-                Object.entries(activeNotes).map(([key, value]) => {
-                    return value['LFO']['LFOGain']['gain']['value'] = normalizedLFOGain
-                })
-                break
-
-            case midiMapping.VCFTypeInput:
-                let VCFTypeIndex = Math.round(inputValue / VCFToggleStepSize)
-                setVCFType(VCFTypes[VCFTypeIndex])
-                Object.entries(activeNotes).map(([key, value]) => {
-                    return value['VCF']['type'] = VCFTypes[VCFTypeIndex].toLowerCase()
-                })
-                break
-
-            case midiMapping.VCFQInput:
-                let normalizedVCFQ = normalize(inputValue, 127, effectsSettings.VCFQMin, effectsSettings.VCFQMax)
-                setVCFQ(normalizedVCFQ)
-                Object.entries(activeNotes).map(([key, value]) => {
-                    return value['VCF']['q'] = normalizedVCFQ
-                })
-                break
-
-            case midiMapping.VCFFrequencyInput:
-                let normalizedVCFFrequency = normalize(inputValue, 127, effectsSettings.VCFFrequencyMin, effectsSettings.VCFFrequencyMax)
-                setVCFFrequency(normalizedVCFFrequency)
-                Object.entries(activeNotes).map(([key, value]) => {
-                    return value['VCF']['frequency']['value'] = normalizedVCFFrequency
-                })
-                break
-
-            case midiMapping.VCFGainInput:
-                let normalizedVCFGain = normalize(inputValue, 127, effectsSettings.VCFGainMin, effectsSettings.VCFGainMax)
-                setVCFGain(normalizedVCFGain)
-                Object.entries(activeNotes).map(([key, value]) => {
-                    return value['VCF']['gain']['value'] = normalizedVCFGain
-                })
-                break
-
-            case midiMapping.outputGainInput:
-                let normalizedOutputGain = normalize(inputValue, 127, effectsSettings.outputGainMin, effectsSettings.outputGainMax)
-                setOutputGain(normalizedOutputGain)
-                Object.entries(activeNotes).map(([key, value]) => {
-                    // console.log(value)
-                    return value['output']['gain']['value'] = normalizedOutputGain
-                })
-                break
-            default:
-                break
-
-        }
+        let inputValue = velocity - 127 / 2
+        let pitchBendStrength = 13.082 / 63.5 * 2
+    
+        Object.entries(activeNotes).map(([key, value]) => {
+            let originalFrequency = midiNoteToFrequency(key)
+            return value.frequency.value = originalFrequency + inputValue * pitchBendStrength
+        })
     }
 
     const padDownHandler = (input) => {
@@ -350,16 +328,7 @@ export default function Synth(props) {
         console.log("Aftertouch")
     }
 
-    const pitchBendHandler = (input) => {
-
-        let inputValue = input.data[2] - 127 / 2
-        let pitchBendStrength = 13.082 / 63.5 * 2
-
-        Object.entries(activeNotes).map(([key, value]) => {
-            let originalFrequency = midiNoteToFrequency(key)
-            return value.frequency.value = originalFrequency + inputValue * pitchBendStrength
-        })
-    }
+    
 
     let currentVirtualKey;
 
@@ -419,55 +388,91 @@ export default function Synth(props) {
         }
     }
 
-    const setNewInputType = (type) => {
-        setInputType(type)
-    }
+    
 
     
 
     
     return (
+        
         <div className='synth-wrapper'>
-        <Landing 
-            // activateSynth={activateSynth} 
-            synthActive={synthActiveRef.current} 
-            setAudioContext={setAudioContext}
-            setSynthActive={setSynthActive} 
-            setNewInputType={setNewInputType}
-        />
-        <Input 
-            keyDown={keyDownHandler} 
-            keyUp={keyUpHandler}
-            range={rangeHandler}
-            padDown={padDownHandler}
-            padUp={padUpHandler}
-            aftertouch={aftertouchHandler}
-            pitchBend={pitchBendHandler}
-            synthActive={synthActiveRef.current}
-            virtualKeyDown={virtualKeyDownHandler}
-            virtualKeyUp={virtualKeyUpHandler}
-            // inputType={inputType}
-        />
-        <section className='oscillator-wrapper'>
-            <SettingsWidget 
-                label="VCO" 
-                waveType={VCOTypeRef.current}
-                icon={true}
-                info={{'gain': VCAGainRef.current}}
-                // gain={vcaGainRef.current}
+            <DetectInput 
+                setInputType={setNewInputType}
+                setTouchControls={setTouchControls}
             />
-            <SettingsWidget 
-                label="LFO" 
-                waveType={LFOTypeRef.current}
-                icon={true}
-                info={{
-                    'freq': LFOFrequencyRef.current,
-                    'gain': LFOGainRef.current
-                }}
-                // gain={vcaGainRef.current}
+            <MIDIInput 
+                synthActive={synthActive}
+                inputType={inputType}
+                setInputType={setNewInputType}
+                keyDownHandler={keyDownHandler} 
+                keyUpHandler={keyUpHandler}
+                padDown={padDownHandler}
+                padUp={padUpHandler}
+                aftertouch={aftertouchHandler}
+                pitchBendHandler={pitchBendHandler}
+                VCOTypeInputHandler={VCOTypeInputHandler}
+                VCAGainInputHandler={VCAGainInputHandler}
+                LFOTypeInputHandler={LFOTypeInputHandler}
+                LFOFrequencyInputHandler={LFOFrequencyInputHandler}
+                LFOGainInputHandler={LFOGainInputHandler}
+                VCFTypeInputHandler={VCFTypeInputHandler}
+                VCFQInputHandler={VCFQInputHandler}
+                VCFFrequencyInputHandler={VCFFrequencyInputHandler}
+                VCFGainInputHandler={VCFGainInputHandler}
+                outputGainInputHandler={outputGainInputHandler}
             />
+            <QWERTYInput 
+                synthActive={synthActive}
+                inputType={inputType}
+            />
+            <Landing 
+                // activateSynth={activateSynth} 
+                synthActive={synthActiveRef.current} 
+                setAudioContext={setAudioContext}
+                setSynthActive={setSynthActive} 
+                setNewInputType={setNewInputType}
+                inputType={inputTypeRef.current}
+            />
+            {/* <Input 
+                keyDown={keyDownHandler} 
+                keyUp={keyUpHandler}
+                range={rangeHandler}
+                padDown={padDownHandler}
+                padUp={padUpHandler}
+                aftertouch={aftertouchHandler}
+                pitchBend={pitchBendHandler}
+                synthActive={synthActiveRef.current}
+                virtualKeyDown={virtualKeyDownHandler}
+                virtualKeyUp={virtualKeyUpHandler}
+                // inputType={inputType}
+            /> */}
+            <section className='oscillator-wrapper'>
+                <SettingsWidget 
+                    label="VCO" 
+                    waveType={VCOTypeRef.current}
+                    icon={true}
+                    info={{'gain': VCAGainRef.current}}
+                    // gain={vcaGainRef.current}
+                />
+                <SettingsWidget 
+                    label="LFO" 
+                    waveType={LFOTypeRef.current}
+                    icon={true}
+                    info={{
+                        'freq': LFOFrequencyRef.current,
+                        'gain': LFOGainRef.current
+                    }}
+                    // gain={vcaGainRef.current}
+                />
         </section>
         <section className='notes-wrapper'>
+
+            <VirtualKeyboard 
+                synthActive={synthActive}
+                touchControls={touchControls}
+                keyDownHandler={keyDownHandler} 
+                keyUpHandler={keyUpHandler}
+            />
         
             {inputType === 'midi' ?
                 Object.entries(activeNotes).length <= 0 ? 
@@ -483,7 +488,7 @@ export default function Synth(props) {
                     }) : null
             }
 
-            {inputType === 'qwerty' ?
+            {/* {inputType === 'qwerty' ?
                 <div className='keyboard-wrapper' ref={virtualKeyboardRef}>
                     <span data-key-label='a' data-key-note='48' className='keyboard-note label'>a</span>
                     <span data-key-label='w' data-key-note='49' className='keyboard-note black-note label'>w</span>
@@ -505,7 +510,7 @@ export default function Synth(props) {
                     <span data-key-label=';' data-key-note='64' className='keyboard-note label'>;</span>
                 </div>
                 : null
-            }
+            } */}
 
 
             
@@ -522,8 +527,9 @@ export default function Synth(props) {
                 info={{
                     // 'type': VCFTypeRef.current,
                     'freq': VCFFrequencyRef.current,
-                    // 'Q': VCFQRef.current,
-                    'Gain': VCFGainRef.current
+                    'Q': VCFQRef.current,
+                    'Gain': VCFGainRef.current,
+                    'Master': outputGainRef.current
                 }}
                 // gain={vcaGainRef.current}
             />
