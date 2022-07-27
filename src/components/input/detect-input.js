@@ -29,12 +29,14 @@ export default function DetectInput(props) {
         
         // Detect Browser Support for MIDI API
         if (navigator.requestMIDIAccess && "requestMIDIAccess" in navigator) {
+            props.setTouchControls(false)
             return props.setInputType('midi')
             // navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure)
         } 
 
         // Default to QWERTY Input
         props.setInputType('virtualKeyboard')
+        props.setTouchControls(false)
         console.log('Your Browser Does Not Support  MIDI. Switching to Computer Keyboard')
         return 
 

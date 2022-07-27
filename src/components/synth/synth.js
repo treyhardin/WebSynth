@@ -48,6 +48,11 @@ export default function Synth(props) {
     // Active Notes State
     const [ activeNotes, setActiveNotes ] = useState({})
 
+    // Octave State
+    const [octave, setOctave] = useState(1)
+    const octaveRef = useRef()
+    octaveRef.current = octave
+
     // VCO Wave Type State
     const [ VCOType, setVCOType ] = useState(null)
     const VCOTypeRef = useRef()
@@ -109,9 +114,8 @@ export default function Synth(props) {
     // Initialize Audio Context
     window.AudioContext = window.AudioContext || window.webkitAudioContext
 
-    
     useEffect(() => {
-
+        
         // Set Synth Defaults
         setVCOType(effectsSettings.VCOTypeDefault)
         setVCAGain(effectsSettings.VCAGainDefault)
@@ -168,8 +172,6 @@ export default function Synth(props) {
         
         LFORef.current.LFOGain.gain.value = LFOGainRef.current
         LFORef.current.frequency.value = LFOFrequencyRef.current
-        console.log(LFORef.current.frequency)
-        console.log(LFOFrequencyRef.current)
         LFORef.current.type = LFOTypeRef.current.toLowerCase()
         VCO.LFO = LFORef.current
 
@@ -203,6 +205,9 @@ export default function Synth(props) {
         // Force Re-Render
         setInputStatus(inputStatus => !inputStatus)
 
+        let virtualKey = document.querySelector(`[data-key-note="${note}"]`)
+        virtualKey.classList.add('pressed')
+
     }
 
     const keyUpHandler = (note, velocity) => {
@@ -228,6 +233,9 @@ export default function Synth(props) {
 
         // Force Re-Render
         setInputStatus(inputStatus => !inputStatus)
+
+        let virtualKey = document.querySelector(`[data-key-note="${note}"]`)
+        virtualKey.classList.remove('pressed')
 
     }
 
@@ -324,19 +332,23 @@ export default function Synth(props) {
         console.log("Aftertouch")
     }
 
+    const handleOctaveChange = (octave) => {
+        setOctave(octave)
+    }
+
     
     return (
 
         <>
 
-            <Landing 
-                // activateSynth={activateSynth} 
-                synthActive={synthActiveRef.current} 
-                setAudioContext={setAudioContext}
-                setSynthActive={setSynthActive} 
-                setNewInputType={setNewInputType}
-                inputType={inputTypeRef.current}
-            />
+        <Landing 
+            // activateSynth={activateSynth} 
+            synthActive={synthActiveRef.current} 
+            setAudioContext={setAudioContext}
+            setSynthActive={setSynthActive} 
+            setNewInputType={setNewInputType}
+            inputType={inputTypeRef.current}
+        />
         
         <div className='synth-wrapper'>
             <DetectInput 
@@ -365,149 +377,101 @@ export default function Synth(props) {
                 outputGainInputHandler={outputGainInputHandler}
             />
             <QWERTYInput 
-                synthActive={synthActive}
-                inputType={inputType}
-            />
-            {/* <Input 
-                keyDown={keyDownHandler} 
-                keyUp={keyUpHandler}
-                range={rangeHandler}
-                padDown={padDownHandler}
-                padUp={padUpHandler}
-                aftertouch={aftertouchHandler}
-                pitchBend={pitchBendHandler}
                 synthActive={synthActiveRef.current}
-                virtualKeyDown={virtualKeyDownHandler}
-                virtualKeyUp={virtualKeyUpHandler}
-                // inputType={inputType}
-            /> */}
+                inputType={inputTypeRef.current}
+                keyDownHandler={keyDownHandler} 
+                keyUpHandler={keyUpHandler}
+                octave={octaveRef.current}
+                // octave={octave}
+                setOctave={setOctave}
+            />
+
+
             <section className='settings-wrapper'>
+
+                <SettingsWidget 
+                    // label="Master" 
+                    icon={false}
+                    info={{'Master': outputGainRef.current}}
+                    settings={{
+                        'Master': {
+                            'state': outputGainRef.current,
+                            'min': effectsSettings.outputGainMin,
+                            'max': effectsSettings.outputGainMax,
+                            'setter': setOutputGain
+                        }
+                    }}
+                    notes={activeNotes}
+                />
+
+                <SettingsWidget 
+                    label="LFO" 
+                    VCOWaveType={VCOTypeRef.current}
+                    setVCOType={setVCOType}
+                    LFOWaveType={LFOTypeRef.current}
+                    setLFOType={setLFOType}
+                    setLFOFrequency={setLFOFrequency}
+                    settings={{
+                        'VCO': {
+                            'state': VCAGainRef.current,
+                            'min': effectsSettings.VCAGainMin,
+                            'max': effectsSettings.VCAGainMax,
+                            'setter': setVCAGain
+                        },
+                        'LFO': {
+                            'state': LFOGainRef.current,
+                            'min': effectsSettings.LFOGainMin,
+                            'max': effectsSettings.LFOGainMax,
+                            'setter': setLFOGain
+                        },
+                        'freq': {
+                            'state': LFOFrequencyRef.current,
+                            'min': effectsSettings.LFOFrequencyMin,
+                            'max': effectsSettings.LFOFrequencyMax,
+                            'setter': setLFOFrequency
+                        }
+                    }}
+                />
             
-            {/* <SettingsWidget 
-                label="VCO" 
-                waveType={VCOTypeRef.current}
-                icon={true}
-                info={{
-                    // 'Master': outputGainRef.current,
-                    'gain': VCAGainRef.current
-                }}
-                // gain={vcaGainRef.current}
-            /> */}
-
-            <SettingsWidget 
-                // label="Master" 
-                icon={false}
-                info={{'Master': outputGainRef.current}}
-                settings={{
-                    'Master': {
-                        'state': outputGainRef.current,
-                        'min': effectsSettings.outputGainMin,
-                        'max': effectsSettings.outputGainMax,
-                        'setter': setOutputGain
-                    }
-                }}
-                notes={activeNotes}
-            />
-
-            <SettingsWidget 
-                label="LFO" 
-                VCOWaveType={VCOTypeRef.current}
-                setVCOType={setVCOType}
-                LFOWaveType={LFOTypeRef.current}
-                setLFOType={setLFOType}
-                setLFOFrequency={setLFOFrequency}
-                // waveType={LFOTypeRef.current}
-                // icon={true}
-                info={{
-                    'VCO': VCAGainRef.current,
-                    'LFO': LFOGainRef.current,
-                    'freq': LFOFrequencyRef.current
-                }}
-                settings={{
-                    'VCO': {
-                        'state': VCAGainRef.current,
-                        'min': effectsSettings.VCAGainMin,
-                        'max': effectsSettings.VCAGainMax,
-                        'setter': setVCAGain
-                    },
-                    'LFO': {
-                        'state': LFOGainRef.current,
-                        'min': effectsSettings.LFOGainMin,
-                        'max': effectsSettings.LFOGainMax,
-                        'setter': setLFOGain
-                    },
-                    'freq': {
-                        'state': LFOFrequencyRef.current,
-                        'min': effectsSettings.LFOFrequencyMin,
-                        'max': effectsSettings.LFOFrequencyMax,
-                        'setter': setLFOFrequency
-                    }
-                }}
-                // gain={vcaGainRef.current}
-            />
-
-            {/* <span className='text-setting'>
-                <p>{VCFTypeRef.current}</p>
-            </span> */}
-        
-            <SettingsWidget 
-                VCFType={VCFTypeRef.current}
-                setVCFType={setVCFType}
-                label="Filter"
-                // waveType={LFOTypeRef.current}
-                // icon={false}
-                info={{
-                    'freq': VCFFrequencyRef.current,
-                    'Q': VCFQRef.current,
-                    'Gain': VCFGainRef.current
-                }}
-                settings={{
-                    'Freq': {
-                        'state': VCFFrequencyRef.current,
-                        'min': effectsSettings.VCFFrequencyMin,
-                        'max': effectsSettings.VCFFrequencyMax,
-                        'setter': setVCFFrequency
-                    },
-                    'Q': {
-                        'state': VCFQRef.current,
-                        'min': effectsSettings.VCFQMin,
-                        'max': effectsSettings.VCFQMax,
-                        'setter': setVCFQ
-                    },
-                    'Gain': {
-                        'state': VCFGainRef.current,
-                        'min': effectsSettings.VCFGainMin,
-                        'max': effectsSettings.VCFGainMax,
-                        'setter': setVCFGain
-                    }
-                }}
-                // gain={vcaGainRef.current}
-            />
-
-            
-            
-        </section>
+                <SettingsWidget 
+                    VCFType={VCFTypeRef.current}
+                    setVCFType={setVCFType}
+                    label="Filter"
+                    settings={{
+                        'Freq': {
+                            'state': VCFFrequencyRef.current,
+                            'min': effectsSettings.VCFFrequencyMin,
+                            'max': effectsSettings.VCFFrequencyMax,
+                            'setter': setVCFFrequency
+                        },
+                        'Q': {
+                            'state': VCFQRef.current,
+                            'min': effectsSettings.VCFQMin,
+                            'max': effectsSettings.VCFQMax,
+                            'setter': setVCFQ
+                        },
+                        'Gain': {
+                            'state': VCFGainRef.current,
+                            'min': effectsSettings.VCFGainMin,
+                            'max': effectsSettings.VCFGainMax,
+                            'setter': setVCFGain
+                        }
+                    }}
+                />
+                
+            </section>
 
             <VirtualKeyboard 
                 synthActive={synthActive}
+                inputType={inputType}
                 touchControls={touchControls}
                 keyDownHandler={keyDownHandler} 
                 keyUpHandler={keyUpHandler}
+                octave={octaveRef.current}
+                setOctave={setOctave}
             />
         
-            {/* {inputType === 'midi' ?
-                Object.entries(activeNotes).length <= 0 ? 
-                    <p className='note-card note-placeholder'>🎹</p> :
-                    Object.entries(activeNotes).map(([key, value]) => {
-                        return (
-                            // <p key={key}>{value.note}</p>
-                            <div key={key} className="note-card" style={getColorFromNote(key)}>
-                                <h3 className="note-name">{getNameFromNoteNumber(key)}</h3>
-                                <p className="note-octave label">{getOctaveFromNoteNumber(key)}</p>
-                            </div>
-                        )
-                    }) : null
-            } */}
+            {/* {inputType === 'midi' ? : null } */}
         
         </div>
 

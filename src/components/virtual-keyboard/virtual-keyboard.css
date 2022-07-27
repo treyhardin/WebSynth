@@ -61,21 +61,27 @@
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
-    /* flex-basis: 80px; */
-    flex-basis: clamp(60px, 8vw, 100px);
-    /* flex-basis: clamp(40px, 10%, 80px); */
+    /* flex-basis: clamp(60px, 8vw, 100px); */
+    flex-basis: calc(100% / 10);
     flex-shrink: 0;
     flex-grow: 0;
     height: 100%;
-    /* background: linear-gradient(90deg, var(--color-yellow), #dcd866); */
     background: linear-gradient(90deg, var(--color-reverse), var(--color-offwhite));
     color: var(--color-ink);
-    /* border: 1px solid var(--color-blue); */
     border-radius: 0 0 8px 8px;
     z-index: 0;
     padding-bottom: var(--size-s);
     cursor: pointer;
     transition: background-color ease-out .1s;
+}
+
+.virtual-keyboard.touch-enabled .keyboard-note {
+    flex-basis: clamp(60px, 8vw, 100px);
+}
+
+.virtual-keyboard.touch-enabled .keyboard-note.black-key {
+    /* flex-basis: clamp(60px, 8vw, 100px); */
+    --black-key-width: clamp(40px, 5vw, 60px);
 }
 
 .keyboard-note:hover,
@@ -88,15 +94,13 @@
     background-color: var(--color-lightblue);
 }
 
-.keyboard-note.black-key {
+.virtual-keyboard .keyboard-note.black-key {
     /* --black-key-width: 60px; */
-    --black-key-width: clamp(40px, 5vw, 60px);
+    --black-key-width: calc(100% / 10 / 1.5);
+    /* --black-key-width: clamp(40px, 5vw, 60px); */
     z-index: 1;
-    /* width: 6%; */
     margin: 0 calc(var(--black-key-width) / 2 * -1);
-    /* width: 0; */
     flex-basis: var(--black-key-width);
-    /* margin-left: ; */
     height: 60%;
     background: linear-gradient(90deg, var(--color-subdued), var(--color-darkblue));
     color: var(--color-reverse);

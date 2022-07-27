@@ -11,16 +11,15 @@ export default function Slider(props) {
         let containerWidth = sliderContainer.current.offsetWidth;
         sliderContainer.current.style.setProperty('--input-height', containerHeight + 'px')
         sliderContainer.current.style.setProperty('--input-width', containerWidth + 'px')
-        console.log(`${containerWidth} x ${containerHeight}`)
-        // sliderInput.current.s
     }
 
     useEffect(() => {
         if (sliderContainer.current && sliderInput.current) {
             resizeSlider()
             window.addEventListener('resize', resizeSlider())
+            resizeSlider()
         }
-    }, [sliderInput])
+    }, [sliderInput.current])
 
 
     return (
