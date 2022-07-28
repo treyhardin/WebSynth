@@ -31,6 +31,13 @@
     padding-left: clamp(10px, var(--size-s), 30px);
     padding-right: clamp(10px, var(--size-s), 30px);
     padding-bottom: clamp(10px, var(--size-s), 30px);
+    -webkit-touch-callout:none;
+    -webkit-user-select:none;
+    -khtml-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
     /* box-shadow: inset 3px 3px 5px var(--color-darkblue); */
 }
 
@@ -72,6 +79,13 @@
     z-index: 0;
     padding-bottom: var(--size-s);
     cursor: pointer;
+    -webkit-touch-callout:none;
+    -webkit-user-select:none;
+    -khtml-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
     /* transition: background-color ease-out .1s; */
 }
 

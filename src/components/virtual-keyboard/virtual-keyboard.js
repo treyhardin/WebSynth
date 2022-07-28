@@ -17,9 +17,9 @@ export default function VirtualKeyboard(props) {
         keyCount = 16
     }
 
-    if (props.inputType === 'midi') {
-        keyCount = 96
-    }
+    // if (props.inputType === 'midi') {
+    //     keyCount = 96
+    // }
 
     let keyboardKeys = []
     let qwertyLabels = ['a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j', 'k', 'o', 'l', 'p', ';' ]
