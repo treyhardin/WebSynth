@@ -177,6 +177,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    filter: drop-shadow(0vw 0vw 1vw var(--color-yellow));
+    color: var(--color-lightblue);
 }
 
 .type-toggle:hover {
@@ -206,6 +208,7 @@
 .type-toggle.inactive {
     background: var(--color-orange);
     filter: var(--shadow-s);
+    color: var(--color-blue);
     /* filter: none; */
 }
 

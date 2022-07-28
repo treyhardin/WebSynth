@@ -82,6 +82,11 @@ export default function Synth(props) {
     const LFOGainRef = useRef()
     LFOGainRef.current = LFOGain
 
+    // LFO Patch State
+    const [ LFOPatch, setLFOPatch ] = useState(null)
+    const LFOPatchRef = useRef()
+    LFOPatchRef.current = LFOPatch
+
     // VCF Type State
     const [ VCFType, setVCFType ] = useState(null)
     const VCFTypeRef = useRef()
@@ -125,6 +130,7 @@ export default function Synth(props) {
         setVCFQ(effectsSettings.VCFQDefault)
         setVCFGain(effectsSettings.VCFGainDefault)
         setOutputGain(effectsSettings.outputGainDefault)
+        setLFOPatch(effectsSettings.LFOPatchDefault)
         
         // Create Audio Context
         if(synthActiveRef.current && !audioContext) {
@@ -168,7 +174,6 @@ export default function Synth(props) {
         LFORef.current.LFOGain = LFOGain
 
         // Add LFO to Object
-        
         LFORef.current.LFOGain.gain.value = LFOGainRef.current
         LFORef.current.frequency.value = LFOFrequencyRef.current
         LFORef.current.type = LFOTypeRef.current.toLowerCase()
@@ -188,8 +193,19 @@ export default function Synth(props) {
         output.gain.value = outputGainRef.current
         VCO.output = output
 
+        // Patch LFO
+        switch (LFOPatchRef.current) {
+            case 'Cutoff':
+                LFORef.current.LFOGain.connect(VCF.frequency)
+                break
+            case 'VCO':
+                LFORef.current.LFOGain.connect(VCO.frequency)
+                break
+            default:
+                LFORef.current.LFOGain.connect(VCF.frequency)
+        }
+
         // Connect Modules
-        LFORef.current.LFOGain.connect(VCA.gain)
         VCO.connect(VCA)
         VCA.connect(VCF)
         VCF.connect(output)
@@ -205,7 +221,12 @@ export default function Synth(props) {
         setInputStatus(inputStatus => !inputStatus)
 
         let virtualKey = document.querySelector(`[data-key-note="${note}"]`)
-        virtualKey.classList.add('pressed')
+
+        // console.log(virtualKey)
+        if (virtualKey) {
+            virtualKey.classList.add('pressed')
+        }
+        
 
     }
 
@@ -234,7 +255,10 @@ export default function Synth(props) {
         setInputStatus(inputStatus => !inputStatus)
 
         let virtualKey = document.querySelector(`[data-key-note="${note}"]`)
-        virtualKey.classList.remove('pressed')
+        // console.log(virtualKey)
+        if (virtualKey) {
+            virtualKey.classList.remove('pressed')
+        }
 
     }
 
@@ -270,6 +294,25 @@ export default function Synth(props) {
         setLFOGain(lfoGain)
         Object.entries(activeNotes).map(([key, value]) => {
             return value['LFO']['LFOGain']['gain']['value'] = lfoGain
+        })
+    }
+
+    const LFOPatchInputHandler = (lfoPatch) => {
+        setLFOPatch(lfoPatch)
+        Object.entries(activeNotes).map(([key, value]) => {
+
+            value['LFO']['LFOGain'].disconnect()
+
+            switch (lfoPatch) {
+                case 'Cutoff':
+                    value['LFO']['LFOGain'].connect(value['VCF']['frequency'])
+                    break
+                case 'VCO':
+                    value['LFO']['LFOGain'].connect(value['frequency'])
+                    break
+                default:
+                    value['LFO']['LFOGain'].connect(value['VCF']['frequency'])
+            }
         })
     }
 
@@ -415,7 +458,9 @@ export default function Synth(props) {
                             'state': VCAGainRef.current,
                             'min': effectsSettings.VCAGainMin,
                             'max': effectsSettings.VCAGainMax,
-                            'setter': VCAGainInputHandler
+                            'setter': VCAGainInputHandler,
+                            'patchSetter': LFOPatchInputHandler,
+                            'activePatch': LFOPatchRef.current
                         },
                         'LFO': {
                             'state': LFOGainRef.current,
@@ -437,11 +482,13 @@ export default function Synth(props) {
                     setVCFType={VCFTypeInputHandler}
                     label="Filter"
                     settings={{
-                        'Freq': {
+                        'Cutoff': {
                             'state': VCFFrequencyRef.current,
                             'min': effectsSettings.VCFFrequencyMin,
                             'max': effectsSettings.VCFFrequencyMax,
-                            'setter': VCFFrequencyInputHandler
+                            'setter': VCFFrequencyInputHandler,
+                            'patchSetter': LFOPatchInputHandler,
+                            'activePatch': LFOPatchRef.current
                         },
                         'Q': {
                             'state': VCFQRef.current,

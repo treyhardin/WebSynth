@@ -11,8 +11,14 @@ export default function VirtualKeyboard(props) {
     let firstKey = 48
     let keyCount = 47
 
-    if (!props.touchControls) {
+    // console.log(props.inputType)
+
+    if (props.inputType === 'virtualKeyboard' && !props.touchControls) {
         keyCount = 16
+    }
+
+    if (props.inputType === 'midi') {
+        keyCount = 96
     }
 
     let keyboardKeys = []

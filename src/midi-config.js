@@ -74,7 +74,8 @@ export const effectsSettings = {
     LFOFrequencyMax: 10,
     LFOGainDefault: 0.01,
     LFOGainMin: 0,
-    LFOGainMax: 0.05,
+    LFOGainMax: 100.05,
+    LFOPatchDefault: 'Cutoff', // 'Cutoff', 'VCA', 'VCO'
 
     // VCF
     VCFTypeDefault: 'Lowpass', // Lowpass, Highpass, Bandpass, Lowshelf, Highshelf, Peaking, Notch, Allpass

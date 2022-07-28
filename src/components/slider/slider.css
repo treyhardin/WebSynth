@@ -44,6 +44,31 @@
     text-align: center;
 }
 
+.slider-label.patch-option {
+    background: none;
+    color: var(--color-yellow);
+    overflow: visible;
+}
+
+.slider-label.patch-option::after {
+    --radio-size: 6px;
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: calc(-2px - var(--radio-size));
+    width: var(--radio-size);
+    height: var(--radio-size);
+    border: 1px solid var(--color-yellow);
+    border-radius: 100%;
+    transform: translateY(-50%);
+    /* color: pink; */
+}
+
+.slider-label.patch-option.active::after  {
+    background-color: var(--color-lightblue);
+    border-width: 2px;
+}
+
 .slider-value {
     text-align: center;
 }
