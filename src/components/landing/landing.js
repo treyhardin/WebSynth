@@ -100,7 +100,7 @@ export default function Landing(props) {
 
         <div className='landing-footer'>
           {props.inputType === 'midi' ? <p className='label'>MIDI Device</p>  : <p className='label'>Virtual Keyboard</p>}
-          <button onClick={() => props.setSynthActive(true)}>Play Now!</button>
+          <button className='button-primary' onClick={() => props.setSynthActive(true)}>Play Now!</button>
           <p className='label'>A Project by <a href='https://www.treyhardin.com' target="_blank" rel="noreferrer">Trey Hardin</a></p>
           <div className='background-grid'>
             <span className='grid-cell'></span>

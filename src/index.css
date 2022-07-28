@@ -102,19 +102,11 @@ p {
 
 button {
   position: relative;
-  overflow: hidden;
-  padding: var(--size-m) var(--size-l);
-  background: rgb(255,255,255);
   font-family: inherit;
   font-size: inherit;
-  color: var(--color-blue);
-  background: var(--color-lightblue);  
-  text-transform: uppercase;
-  margin: var(--size-m);
   border: unset;
-  border-radius: var(--size-l);
-  filter: drop-shadow(0vw 0vw 1vw var(--color-yellow));
-  transition: transform 0.3s ease-out;
+  color: var(--color-blue);
+  cursor: pointer;
 }
 
 button::before {
@@ -129,15 +121,27 @@ button::before {
   z-index: -1;
 }
 
-button:hover {
-  transform: scale(1.1);
-  cursor: pointer;
-  filter: drop-shadow(0vw 0vw 1vw var(--color-lightblue));
-}
-
 button:hover::before {
   opacity: 0;
 }
+
+button.button-primary {
+  overflow: hidden;
+  padding: var(--size-m) var(--size-l);
+  background: var(--color-lightblue);  
+  text-transform: uppercase;
+  margin: var(--size-m);
+  border-radius: var(--size-l);
+  filter: drop-shadow(0vw 0vw 1vw var(--color-yellow));
+  transition: transform 0.3s ease-out;
+}
+
+button.button-primary:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0vw 0vw 1vw var(--color-lightblue));
+}
+
+
 
 @media screen and (hover: none) and (pointer: coarse) and (max-width: 960px) and (min-width: 481px) and (orientation:landscape) {
   .hide-mobile-landscape {

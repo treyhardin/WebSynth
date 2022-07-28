@@ -88,7 +88,9 @@ export default function SettingsWidget(props) {
                     min={value.min}
                     max={value.max}
                     setter={value.setter}
-                    value={Math.round((value.state + Number.EPSILON) * 100) / 100} 
+                    value={Math.round((value.state + Number.EPSILON) * 100) / 100}
+                    patchSetter={value.patchSetter}
+                    activePatch={value.activePatch}
                   />
               )
             })
