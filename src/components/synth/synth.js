@@ -397,7 +397,7 @@ export default function Synth(props) {
                             'state': outputGainRef.current,
                             'min': effectsSettings.outputGainMin,
                             'max': effectsSettings.outputGainMax,
-                            'setter': setOutputGain
+                            'setter': outputGainInputHandler
                         }
                     }}
                     notes={activeNotes}
@@ -406,54 +406,54 @@ export default function Synth(props) {
                 <SettingsWidget 
                     label="LFO" 
                     VCOWaveType={VCOTypeRef.current}
-                    setVCOType={setVCOType}
+                    setVCOType={VCOTypeInputHandler}
                     LFOWaveType={LFOTypeRef.current}
-                    setLFOType={setLFOType}
+                    setLFOType={LFOTypeInputHandler}
                     setLFOFrequency={setLFOFrequency}
                     settings={{
                         'VCO': {
                             'state': VCAGainRef.current,
                             'min': effectsSettings.VCAGainMin,
                             'max': effectsSettings.VCAGainMax,
-                            'setter': setVCAGain
+                            'setter': VCAGainInputHandler
                         },
                         'LFO': {
                             'state': LFOGainRef.current,
                             'min': effectsSettings.LFOGainMin,
                             'max': effectsSettings.LFOGainMax,
-                            'setter': setLFOGain
+                            'setter': LFOGainInputHandler
                         },
                         'freq': {
                             'state': LFOFrequencyRef.current,
                             'min': effectsSettings.LFOFrequencyMin,
                             'max': effectsSettings.LFOFrequencyMax,
-                            'setter': setLFOFrequency
+                            'setter': LFOFrequencyInputHandler
                         }
                     }}
                 />
             
                 <SettingsWidget 
                     VCFType={VCFTypeRef.current}
-                    setVCFType={setVCFType}
+                    setVCFType={VCFTypeInputHandler}
                     label="Filter"
                     settings={{
                         'Freq': {
                             'state': VCFFrequencyRef.current,
                             'min': effectsSettings.VCFFrequencyMin,
                             'max': effectsSettings.VCFFrequencyMax,
-                            'setter': setVCFFrequency
+                            'setter': VCFFrequencyInputHandler
                         },
                         'Q': {
                             'state': VCFQRef.current,
                             'min': effectsSettings.VCFQMin,
                             'max': effectsSettings.VCFQMax,
-                            'setter': setVCFQ
+                            'setter': VCFQInputHandler
                         },
                         'Gain': {
                             'state': VCFGainRef.current,
                             'min': effectsSettings.VCFGainMin,
                             'max': effectsSettings.VCFGainMax,
-                            'setter': setVCFGain
+                            'setter': VCFGainInputHandler
                         }
                     }}
                 />
