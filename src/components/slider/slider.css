@@ -26,6 +26,7 @@
     align-items: center;
     flex-grow: 1;
     width: 100%;
+    z-index: 1;
 }
 
 .slider-tick {
@@ -73,22 +74,33 @@
     text-align: center;
 }
 
+.range-input-wrapper {
+    top: 0;
+    left: 50%;
+    bottom: 0;
+    position: absolute;
+    aspect-ratio: 1 / 1;
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    transform: translateX(-50%);
+    transform-origin: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
 .slider-wrapper input[type=range] {
     -webkit-appearance: none;
     appearance: none;
     background: transparent;
     cursor: grab;
     border: none;
-    transform: rotate(-90deg) translate(-50%, -50%);
-    transform-origin: left;
+    transform: rotate(-90deg);
     background: var(--color-border);
     height: 2px;
-    width: var(--input-height);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin: 0;
-    padding: 0;
+    width: 100%;
     z-index: 3;
 }
 
