@@ -34,9 +34,12 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: clamp(12px, 3vw, 18px);
-  min-height: 100vh;
-  max-height: 100vh;
   overflow: hidden;
+  height: calc(var(--vh, 1vh) * 100);
+  min-height: calc(var(--vh, 1vh) * 100);
+  max-height: calc(var(--vh, 1vh) * 100);
+  background: rgb(32,27,85);
+  background: radial-gradient(circle, rgba(32,27,85,1) 0%, rgba(2,0,23,1) 100%);
 }
 
 .section {

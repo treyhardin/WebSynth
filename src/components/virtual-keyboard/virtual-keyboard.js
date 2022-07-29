@@ -1,6 +1,5 @@
-import { createElement, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { getNameFromNoteNumber } from '../../helpers/helpers'
-import QWERTYInput from '../input/qwerty-input'
 import './virtual-keyboard.css'
 
 export default function VirtualKeyboard(props) {
@@ -8,18 +7,14 @@ export default function VirtualKeyboard(props) {
     let virtualKeyboard = useRef()
 
     // Create Keys
-    let firstKey = 48
-    let keyCount = 47
-
-    // console.log(props.inputType)
+    let firstKey = 24
+    let keyCount = 72
 
     if (props.inputType === 'virtualKeyboard' && !props.touchControls) {
+
+        firstKey = 60 // If you change this, make sure to update the mapping in qwerty-input.js
         keyCount = 16
     }
-
-    // if (props.inputType === 'midi') {
-    //     keyCount = 96
-    // }
 
     let keyboardKeys = []
     let qwertyLabels = ['a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j', 'k', 'o', 'l', 'p', ';' ]
@@ -28,12 +23,11 @@ export default function VirtualKeyboard(props) {
     for (let i = firstKey; i <= keyCount + firstKey; i++ ) {
         let keyLabel = qwertyLabels[qwertyLabelIndex]
         qwertyLabelIndex++
-        // let keyLabel = 'g'
         let keyColor = 'white'
         let noteName = getNameFromNoteNumber(i)
         let noteNumber = i + (props.octave * 12)
         
-        if (noteName == 'C#' || noteName == 'D#' || noteName == 'F#' || noteName == 'G#' || noteName == 'A#') {
+        if (noteName === 'C#' || noteName === 'D#' || noteName === 'F#' || noteName === 'G#' || noteName === 'A#') {
             keyColor = 'black'
         }
 
@@ -50,6 +44,8 @@ export default function VirtualKeyboard(props) {
         let elementPressed = e.target
         let keyPressed = e.target.dataset.keyNote
 
+        elementPressed.classList.add('pressed')
+
         if (keyPressed) {
         
             props.keyDownHandler(keyPressed, 127)
@@ -57,20 +53,18 @@ export default function VirtualKeyboard(props) {
             elementPressed.addEventListener('pointerleave', (mouseLeaveEvent) => {
                 if (isPlaying) props.keyUpHandler(keyPressed, 127)
                 isPlaying = false
+                elementPressed.classList.remove('pressed')
             }, {once: true})
 
             elementPressed.addEventListener('pointerup', () => {
                 if (isPlaying) props.keyUpHandler(keyPressed, 127)
                 isPlaying = false
+                elementPressed.classList.remove('pressed')
             }, {once: true})
 
         }
-    }
 
-    let pointerDown = false
-
-    const virtualKeyboardPointerUpHandler = (e) => {
-        pointerDown = false
+        getKeyNumbersPressed(props.activeNotes)
     }
 
     useEffect(() => {
@@ -85,11 +79,38 @@ export default function VirtualKeyboard(props) {
 
     }, [virtualKeyboard, props.octave])
 
+
+    let keyNumbersPressed = []
+
+    const getKeyNumbersPressed = (notes) => {
+        
+        let keysPressed = Object.values(notes)
+        let newKeysPressed = []
+        console.log(keysPressed)
+        if (keysPressed.length > 0) {
+            keysPressed.map((value) => {
+                newKeysPressed.push(value.note)
+            })
+            return keyNumbersPressed = newKeysPressed
+        }
+        return keyNumbersPressed = []
+    }
+
+    getKeyNumbersPressed(props.activeNotes)
+
     return (
         <>
-            <section className={`virtual-keyboard ${props.touchControls && props.inputType === 'virtualKeyboard' ? 'touch-enabled' : null}`} ref={virtualKeyboard}>
+            <section className={`virtual-keyboard ${props.touchControls && props.inputType === 'virtualKeyboard' ? 'touch-enabled' : ''} ${props.inputType === 'midi' ? 'midi-keyboard' : ''}`} ref={virtualKeyboard}>
                 {keyboardKeys.map((key) => {
-                    return <span key={key.note} data-key-note={key.note} className={`keyboard-note label ${key.color}-key`}><p className='key-label'>{key.label}</p></span>
+                    return (
+                    <span 
+                        key={key.note} 
+                        data-key-note={key.note} 
+                        className={`keyboard-note label ${key.color}-key ${keyNumbersPressed.includes(key.note) ? 'pressed' : ''}`}
+                    >
+                        <p className='key-label'>{key.label}</p>
+                    </span>
+                    )
                 })}
             </section>
         </>

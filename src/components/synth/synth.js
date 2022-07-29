@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
-import { effectsSettings, midiMapping } from '../../midi-config'
-import { midiNoteToFrequency, getColorFromNote, getNameFromNoteNumber, getOctaveFromNoteNumber, normalize } from '../../helpers/helpers'
-import Input from '../input/input'
+import { effectsSettings } from '../../midi-config'
+import { midiNoteToFrequency } from '../../helpers/helpers'
 import Landing from '../landing/landing'
 import './synth.css'
 import SettingsWidget from '../settings-widget/settings-widget'
@@ -48,7 +47,7 @@ export default function Synth(props) {
     const [ activeNotes, setActiveNotes ] = useState({})
 
     // Octave State
-    const [octave, setOctave] = useState(1)
+    const [octave, setOctave] = useState(0)
     const octaveRef = useRef()
     octaveRef.current = octave
 
@@ -153,9 +152,6 @@ export default function Synth(props) {
 
     const keyDownHandler = (note, velocity) => {
 
-        // Console.log the input here and look for the 2nd item in the array to find your controller's input values
-        // console.log(input)
-
         // Create VCO (Base Tone Oscillator)
         let VCO = audioContextRef.current.createOscillator()
         VCO.type = VCOTypeRef.current.toLowerCase()
@@ -220,14 +216,6 @@ export default function Synth(props) {
         // Force Re-Render
         setInputStatus(inputStatus => !inputStatus)
 
-        let virtualKey = document.querySelector(`[data-key-note="${note}"]`)
-
-        // console.log(virtualKey)
-        if (virtualKey) {
-            virtualKey.classList.add('pressed')
-        }
-        
-
     }
 
     const keyUpHandler = (note, velocity) => {
@@ -253,12 +241,6 @@ export default function Synth(props) {
 
         // Force Re-Render
         setInputStatus(inputStatus => !inputStatus)
-
-        let virtualKey = document.querySelector(`[data-key-note="${note}"]`)
-        // console.log(virtualKey)
-        if (virtualKey) {
-            virtualKey.classList.remove('pressed')
-        }
 
     }
 
@@ -373,11 +355,6 @@ export default function Synth(props) {
     const aftertouchHandler = (input) => {
         console.log("Aftertouch")
     }
-
-    const handleOctaveChange = (octave) => {
-        setOctave(octave)
-    }
-
     
     return (
 
@@ -515,6 +492,7 @@ export default function Synth(props) {
                 keyUpHandler={keyUpHandler}
                 octave={octaveRef.current}
                 setOctave={setOctave}
+                activeNotes={activeNotes}
             />
         
             {/* {inputType === 'midi' ? : null } */}

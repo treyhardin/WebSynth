@@ -1,4 +1,3 @@
-import { useState, useRef, useEffect } from 'react'
 import './landing.css'
 
 export default function Landing(props) {

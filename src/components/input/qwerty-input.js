@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 
 export default function QWERTYInput(props) {
@@ -13,81 +13,81 @@ export default function QWERTYInput(props) {
         switch (e.key) {
             case 'a':
                 // console.log(props.octave)
-                handler(48)
+                handler(60)
                 // handler(48 + octave * 12, 127)
                 break
             case 'w':
                 // handler(49 + octave * 12, 127)
-                handler(49)
+                handler(61)
                 break
             case 's':
                 // handler(50 + octave * 12, 127)
-                handler(50)
+                handler(62)
                 break
             case 'e':
                 // handler(51 + octave * 12, 127)
-                handler(51)
+                handler(63)
                 break
             case 'd':
                 // handler(52 + octave * 12, 127)
-                handler(52)
+                handler(64)
                 break
             case 'f':
                 // handler(53 + octave * 12, 127)
-                handler(53)
+                handler(65)
                 break
             case 't':
                 // handler(54 + octave * 12, 127)
-                handler(54)
+                handler(66)
                 break
             case 'g':
                 // handler(55 + octave * 12, 127)
-                handler(55)
+                handler(67)
                 break
             case 'y':
                 // handler(56 + octave * 12, 127)
-                handler(56)
+                handler(68)
                 break
             case 'h':
                 // handler(57 + octave * 12, 127)
-                handler(57)
+                handler(69)
                 break
             case 'u':
                 // handler(58 + octave * 12, 127)
-                handler(58)
+                handler(70)
                 break
             case 'j':
                 // handler(59 + octave * 12, 127)
-                handler(59)
+                handler(71)
                 break
             case 'k':
                 // handler(60 + octave * 12, 127)
-                handler(60)
+                handler(72)
                 break
             case 'o':
                 // handler(61 + octave * 12, 127)
-                handler(61)
+                handler(73)
                 break
             case 'l':
                 // handler(62 + octave * 12, 127)
-                handler(62)
+                handler(74)
                 break
             case 'p':
                 // handler(63 + octave * 12, 127)
-                handler(63)
+                handler(75)
                 break
             case ';':
                 // handler(64 + octave * 12, 127)
-                handler(64)
+                handler(76)
                 break
             case 'z':
-                if (direction == 'keyDown') {
+                if (direction === 'keyDown') {
                     currentOctave.current -= 1
                     props.setOctave(currentOctave.current)
                 }
                 break
             case 'x':
-                if (direction == 'keyDown') {
+                if (direction === 'keyDown') {
                     currentOctave.current += 1
                     props.setOctave(currentOctave.current)
                 }
