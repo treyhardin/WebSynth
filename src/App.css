@@ -15,3 +15,9 @@
   background: radial-gradient(circle, rgba(32,27,85,1) 0%, rgba(2,0,23,1) 100%); */
 }
 
+/* Raspberry PI Breakpoint */
+@media screen and (max-width: 480px) and (orientation: landscape) {
+  .App {
+    cursor: none;
+  }
+}

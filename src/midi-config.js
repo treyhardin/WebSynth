@@ -1,19 +1,23 @@
 // MIDI Notes to Access Control
 export const midiMapping = {
 
-    LFOFrequencyInput: 1,
+    // LFOFrequencyInput: 1,
 
     VCOTypeInput: 74,
     VCAGainInput: 18,
 
     LFOWaveTypeInput: 71,
     LFOGainInput: 19,
+    
 
     VCFTypeInput: 76,
-    VCFGainInput: 16,
+    LFOFrequencyInput: 16,
+    // VCFGainInput: 16,
 
-    VCFFrequencyInput: 77,
-    VCFQInput: 17,
+    VCFFrequencyInput: 17,
+    VCFQInput: 91,
+
+    VCFGainInput: 79,
     
 
 
@@ -41,9 +45,9 @@ export const midiMapping = {
     -19
     -16
     -17
-    91
-    79
-    72
+    -91
+    -79
+    -72
     ----------------------------------- */
 
 
