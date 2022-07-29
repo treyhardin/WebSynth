@@ -125,10 +125,9 @@
  }
 
 .slider-wrapper input[type="range"]::-moz-range-thumb {
-    height: clamp(80px, 10vw, 100px);
+    height: var(--input-width, clamp(40px, 8vw, 100px));
     background: linear-gradient(90deg, var(--color-blue), var(--color-darkblue));
     aspect-ratio: 3 / 7;
-    width: auto;
     border: clamp(2px, 0.5vw, 6px) solid var(--color-yellow);
     border-radius: var(--size-l);
     filter: var(--shadow-l);

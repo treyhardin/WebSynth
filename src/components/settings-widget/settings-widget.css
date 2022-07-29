@@ -244,6 +244,7 @@
 
     .setting-header {
         flex-basis: 30%;
+        overflow: hidden;
     }
 
     .settings-widget:first-child {
