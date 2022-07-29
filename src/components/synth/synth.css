@@ -25,7 +25,7 @@
     padding: clamp(10px, var(--size-s), 30px);
 }
 
-@media screen and (max-width: 480px) and (max-height: 320px) {
+@media screen and (max-width: 480px) and (orientation: landscape) {
     .settings-wrapper {
         overflow-x: hidden;
         overflow-y: hidden;

@@ -46,7 +46,7 @@
 }
 
 /* Raspberry PI Breakpoint */
-@media screen and (max-width: 480px) and (max-height: 320px) {
+@media screen and (max-width: 480px) and (orientation: landscape) {
     .virtual-keyboard {
         display: none;
     }
