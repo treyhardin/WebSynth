@@ -9,18 +9,14 @@ export const midiMapping = {
     LFOWaveTypeInput: 71,
     LFOGainInput: 19,
     
-
     VCFTypeInput: 76,
     LFOFrequencyInput: 16,
-    // VCFGainInput: 16,
 
     VCFFrequencyInput: 17,
     VCFQInput: 91,
 
     VCFGainInput: 79,
     
-
-
     outputGainInput: 72,
 
     /* ---- Arturia Minilab Mapping ----
@@ -83,12 +79,15 @@ export const effectsSettings = {
 
     // VCF
     VCFTypeDefault: 'Lowpass', // Lowpass, Highpass, Bandpass, Lowshelf, Highshelf, Peaking, Notch, Allpass
+    
     VCFQDefault: 0,
     VCFQMin: -3.4,
     VCFQMax: 3.4,
+    
     VCFFrequencyDefault: 2500, // 0 - 24000
     VCFFrequencyMin: 0,
     VCFFrequencyMax: 3000,
+    
     VCFGainDefault: 0,
     VCFGainMin: -3.4,
     VCFGainMax: 50,
@@ -100,3 +99,33 @@ export const effectsSettings = {
     
     
 }
+
+export const synthPresets = [
+    {
+        name: 'Electric Organ',
+        VCOTypeDefault: 'Sine', // From oscillatorWaveTypes options
+        VCAGainDefault: 0.03,
+        LFOTypeDefault: 'Sine', // From oscillatorWaveTypes options
+        LFOFrequencyDefault: 3, // Range: 0 - 22050
+        LFOGainDefault: 4.5,
+        LFOPatchDefault: 'VCO', // 'Cutoff', 'VCO'
+        VCFTypeDefault: 'Lowpass', // Lowpass, Highpass, Bandpass, Lowshelf, Highshelf, Peaking, Notch, Allpass
+        VCFQDefault: 0,
+        VCFFrequencyDefault: 2500, // 0 - 24000
+        VCFGainDefault: 0
+    },
+    {
+        name: 'Electric Organ',
+        VCOTypeDefault: 'Sine', // From oscillatorWaveTypes options
+        VCAGainDefault: 0.03,
+        LFOTypeDefault: 'Sine', // From oscillatorWaveTypes options
+        LFOFrequencyDefault: 3, // Range: 0 - 22050
+        LFOGainDefault: 4.5,
+        LFOPatchDefault: 'VCO', // 'Cutoff', 'VCO'
+        VCFTypeDefault: 'Lowpass', // Lowpass, Highpass, Bandpass, Lowshelf, Highshelf, Peaking, Notch, Allpass
+        VCFQDefault: 0,
+        VCFFrequencyDefault: 2500, // 0 - 24000
+        VCFGainDefault: 0
+    }
+
+]
